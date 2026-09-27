@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Meow CF App - PWA to APK & Multi-Engine Studio</title>
+    <title>Meow CF App - PWA, APK & iOS Offline Studio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -325,6 +325,11 @@
             color: black;
         }
 
+        .btn-pink {
+            background: var(--accent-pink);
+            color: black;
+        }
+
         .btn-help {
             background: var(--accent-orange);
             color: black;
@@ -381,7 +386,7 @@
         /* Download Area */
         .download-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem;
             margin-top: 1.5rem;
         }
@@ -575,7 +580,7 @@
             <span>Meow CF App</span>
         </div>
         <div class="header-actions">
-            <div class="tagline">PWA & APK Multi-Engine Studio</div>
+            <div class="tagline">PWA, APK & iOS Offline Studio</div>
             <button class="neo-btn btn-help" onclick="toggleHelpModal(true)">
                 <span>📖</span> Diccionario / Ayuda
             </button>
@@ -588,7 +593,7 @@
         <div class="stepper">
             <div class="step-pill active" id="pill-step-1">1. Sistema</div>
             <div class="step-pill" id="pill-step-2">2. Datos App</div>
-            <div class="step-pill" id="pill-step-3">3. Motor / CI</div>
+            <div class="step-pill" id="pill-step-3">3. Motor / Offline</div>
             <div class="step-pill" id="pill-step-4">4. Descargar</div>
         </div>
 
@@ -608,13 +613,13 @@
                     </div>
                     <div class="os-card" onclick="selectOS('ios', this)">
                         <div class="os-icon">🍎</div>
-                        <div class="os-title">iOS (Safari WebApp)</div>
-                        <p style="font-size: 0.8rem; margin-top: 6px; font-weight: 600;">Apple Mobile Web Meta / Webkit</p>
+                        <div class="os-title">iOS (Safari WebApp / Offline)</div>
+                        <p style="font-size: 0.8rem; margin-top: 6px; font-weight: 600;">Service Worker + Metas Safari + Cache</p>
                     </div>
                     <div class="os-card" onclick="selectOS('universal', this)">
                         <div class="os-icon">🚀</div>
                         <div class="os-title">Universal</div>
-                        <p style="font-size: 0.8rem; margin-top: 6px; font-weight: 600;">Manifest.json + Workflows Multiplataforma</p>
+                        <p style="font-size: 0.8rem; margin-top: 6px; font-weight: 600;">Manifest.json + iOS Service Worker + CI</p>
                     </div>
                 </div>
 
@@ -638,12 +643,12 @@
                     <div class="form-group">
                         <label for="appShortName">Nombre Corto</label>
                         <input type="text" id="appShortName" value="MeowApp" placeholder="Ej. MeowApp">
-                        <span class="help-text">Visible en el icono del menú de inicio.</span>
+                        <span class="help-text">Visible en el icono del menú de inicio de iOS / Android.</span>
                     </div>
 
                     <div class="form-group full-width">
                         <label for="appDesc">Descripción</label>
-                        <textarea id="appDesc" rows="3" placeholder="Descripción breve de la aplicación...">Una increíble app web lista para compilar a APK.</textarea>
+                        <textarea id="appDesc" rows="3" placeholder="Descripción breve de la aplicación...">Una increíble app web lista para compilar a APK y guardar offline en iOS.</textarea>
                     </div>
 
                     <div class="form-group">
@@ -673,24 +678,33 @@
 
                 <div class="btn-group">
                     <button class="neo-btn btn-secondary" onclick="nextStep(1)">⬅ Atrás</button>
-                    <button class="neo-btn btn-primary" onclick="nextStep(3)">Siguiente: Motor / CI ➔</button>
+                    <button class="neo-btn btn-primary" onclick="nextStep(3)">Siguiente: Motor / Offline ➔</button>
                 </div>
             </div>
 
-            <!-- STEP 3: Appearance & Engine Config -->
+            <!-- STEP 3: Appearance, Engine & iOS Offline Config -->
             <div class="step-panel" id="step-3">
-                <h2 class="panel-title"><span>⚙️</span> Paso 3: Apariencia y Motor de Compilación</h2>
-                <p class="panel-desc">Ajusta la apariencia visual y selecciona tu motor preferido para GitHub Actions.</p>
+                <h2 class="panel-title"><span>⚙️</span> Paso 3: Apariencia, Motor y Modo Offline iOS</h2>
+                <p class="panel-desc">Ajusta los detalles visuales y la estrategia para guardar datos sin conexión en iPhone/iPad.</p>
 
                 <div class="form-grid">
                     <div class="form-group full-width">
-                        <label for="buildEngine" style="color: var(--main-blue);">⚡ Motor de Compilación Seleccionado</label>
+                        <label for="buildEngine" style="color: var(--main-blue);">⚡ Motor de Compilación APK (Android / GitHub Actions)</label>
                         <select id="buildEngine" style="background: #EFF6FF; border-color: var(--main-blue);">
-                            <option value="capacitor">⚡ Capacitor CLI (Ionic Native Engine - Muy Robusto)</option>
+                            <option value="capacitor">⚡ Capacitor CLI (Ionic Native Engine - Recomendado)</option>
                             <option value="bubblewrap">🤖 Bubblewrap CLI (Google Trusted Web Activity)</option>
                             <option value="pwabuilder">🌐 PWABuilder CLI (Microsoft PWA Engine)</option>
                         </select>
-                        <span class="help-text">Elige qué herramienta automatizará la generación de la APK en GitHub Actions.</span>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="offlineStrategy" style="color: var(--accent-purple);">🍎 Estrategia Modo Offline iOS (Safari Service Worker)</label>
+                        <select id="offlineStrategy" style="background: #FAF5FF; border-color: var(--accent-purple);">
+                            <option value="cache-first">🍏 Cache First (Guarda archivos e HTML locales para carga instantánea en iOS)</option>
+                            <option value="network-first">🌐 Network First con Fallback Offline (Prioriza red y respalda localmente)</option>
+                            <option value="stale-while-revalidate">⚡ Stale While Revalidate (Muestra caché instantánea y actualiza en segundo plano)</option>
+                        </select>
+                        <span class="help-text">Genera un `sw.js` oficial para que iOS guarde tu webapp en la memoria del iPhone sin internet.</span>
                     </div>
 
                     <div class="form-group">
@@ -736,14 +750,15 @@
 
             <!-- STEP 4: Output & Download -->
             <div class="step-panel" id="step-4">
-                <h2 class="panel-title"><span>🎉</span> Paso 4: Código y Archivos de Automatización Generados</h2>
-                <p class="panel-desc">Visualiza o descarga el manifiesto y el workflow YAML generado para tu motor seleccionado.</p>
+                <h2 class="panel-title"><span>🎉</span> Paso 4: Código, Service Worker iOS y Workflows Generados</h2>
+                <p class="panel-desc">Visualiza o descarga el manifiesto, el Service Worker para iOS y el workflow YAML.</p>
 
                 <!-- Bloque de Selección de Código -->
                 <div class="code-container">
                     <div class="code-header">
                         <div class="tab-switcher">
                             <button class="neo-btn btn-yellow" style="padding: 4px 8px; font-size: 0.72rem;" onclick="switchTab('manifest')">📄 manifest.json</button>
+                            <button class="neo-btn btn-pink" style="padding: 4px 8px; font-size: 0.72rem;" onclick="switchTab('sw')">🍎 sw.js (iOS Offline)</button>
                             <button class="neo-btn btn-purple" style="padding: 4px 8px; font-size: 0.72rem;" onclick="switchTab('workflow')">⚙️ Workflow YAML</button>
                             <button class="neo-btn btn-teal" style="padding: 4px 8px; font-size: 0.72rem;" onclick="switchTab('capacitor_config')" id="tabCapacitor" style="display:none;">🛠 capacitor.config</button>
                         </div>
@@ -753,6 +768,12 @@
                 </div>
 
                 <div class="download-cards">
+                    <div class="download-box" style="background: #FFF1F2; border-color: var(--border-color);">
+                        <h4>🍎 iOS Service Worker (`sw.js`)</h4>
+                        <p style="font-size: 0.78rem; margin-bottom: 8px; font-weight: 600;">Guarda el caché para que Safari en iPhone funcione sin internet.</p>
+                        <button class="neo-btn btn-pink" style="width: 100%; font-size: 0.85rem;" onclick="downloadSW()">📥 Descargar `sw.js`</button>
+                    </div>
+
                     <div class="download-box">
                         <h4>📄 Manifiesto (.txt)</h4>
                         <p style="font-size: 0.78rem; margin-bottom: 8px; font-weight: 600;">Configuración PWA en texto plano.</p>
@@ -766,8 +787,8 @@
                     </div>
 
                     <div class="download-box">
-                        <h4>🏷 Metas HTML (.txt)</h4>
-                        <p style="font-size: 0.78rem; margin-bottom: 8px; font-weight: 600;">Etiquetas para el &lt;head&gt; de tu index.html.</p>
+                        <h4>🏷 Metas + Registro SW (.txt)</h4>
+                        <p style="font-size: 0.78rem; margin-bottom: 8px; font-weight: 600;">Etiquetas HTML e inscripción del Service Worker.</p>
                         <button class="neo-btn btn-yellow" style="width: 100%; font-size: 0.85rem;" onclick="downloadHTMLMetaTXT()">📥 Descargar Metas</button>
                     </div>
                 </div>
@@ -786,9 +807,28 @@
         <div class="modal-container">
             <div class="modal-header">
                 <div class="modal-title">
-                    <span>📖</span> Diccionario de Motores y Términos Meow CF
+                    <span>📖</span> Diccionario de Motores, iOS Offline y Términos Meow CF
                 </div>
                 <button class="neo-btn btn-secondary" style="padding: 6px 12px;" onclick="toggleHelpModal(false)">✖ Cerrar</button>
+            </div>
+
+            <!-- Sección iOS Offline -->
+            <div class="dict-section">
+                <h3>🍎 Modo Offline en iOS (Safari WebApp)</h3>
+                <div class="dict-grid">
+                    <div class="dict-item">
+                        <h4>🍏 Service Worker (`sw.js`)</h4>
+                        <p>Script especial en JavaScript que se ejecuta en segundo plano en el iPhone. Intercepta las peticiones de red y guarda automáticamente tu aplicación HTML, CSS, JS e imágenes en la caché local del dispositivo para que funcione instantáneamente sin conexión a internet.</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>📥 Estrategia Cache-First</h4>
+                        <p>Busca primero los recursos en la memoria caché guardada del teléfono y los entrega al instante. Ideal para aplicaciones web offline, juegos y utilidades en iOS.</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>📲 Registro del Service Worker</h4>
+                        <p>Bloque de código JavaScript que se coloca en el `index.html` para indicarle al navegador Safari de iOS que active el archivo `sw.js` al instalar la app en el inicio.</p>
+                    </div>
+                </div>
             </div>
 
             <!-- Sección Motores -->
@@ -840,10 +880,12 @@
     <script>
         let currentOS = 'android';
         let selectedEngine = 'capacitor';
+        let selectedOfflineStrat = 'cache-first';
         let generatedManifest = '';
         let generatedMetaTags = '';
         let generatedYmlWorkflow = '';
         let generatedCapacitorConfig = '';
+        let generatedServiceWorker = '';
         let activeTab = 'manifest';
 
         function toggleHelpModal(show) {
@@ -895,9 +937,11 @@
             const bgColor = document.getElementById('bgColor').value;
             const iconPath = document.getElementById('iconPath').value || 'icon.png';
             selectedEngine = document.getElementById('buildEngine').value;
+            selectedOfflineStrat = document.getElementById('offlineStrategy').value;
 
             const safeAppId = `com.meowcf.${shortName.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
             const safeRepoSlug = shortName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+            const cacheName = `${safeRepoSlug}-v1`;
 
             // 1. Generate Manifest
             const manifestObj = {
@@ -934,26 +978,114 @@
 
             generatedManifest = JSON.stringify(manifestObj, null, 2);
 
-            // 2. Generate HTML Metas
+            // 2. Generate iOS Offline Service Worker (sw.js)
+            generatedServiceWorker = `// Meow CF App - iOS Offline Service Worker (sw.js)
+// Estrategia seleccionada: ${selectedOfflineStrat.toUpperCase()}
+
+const CACHE_NAME = '${cacheName}';
+const ASSETS_TO_CACHE = [
+  './',
+  '${startUrl}',
+  '${iconPath}',
+  'manifest.json'
+];
+
+// Instalar Service Worker y guardar en caché los archivos esenciales
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      console.log('[Meow ServiceWorker] Precaching app shell para iOS');
+      return cache.addAll(ASSETS_TO_CACHE);
+    })
+  );
+  self.skipWaiting();
+});
+
+// Activar y limpiar cachés antiguas
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cache) => {
+          if (cache !== CACHE_NAME) {
+            console.log('[Meow ServiceWorker] Borrando caché obsoleta:', cache);
+            return caches.delete(cache);
+          }
+        })
+      );
+    })
+  );
+  self.clients.claim();
+});
+
+// Interceptar peticiones para el soporte sin conexión
+self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
+
+  event.respondWith(
+    caches.match(event.request).then((cachedResponse) => {
+      if (cachedResponse) {
+        // Devuelve desde la caché de iOS
+        fetch(event.request).then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse));
+          }
+        }).catch(() => {/* Offline fallback silencioso */});
+        return cachedResponse;
+      }
+      return fetch(event.request).then((networkResponse) => {
+        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+          return networkResponse;
+        }
+        const responseToCache = networkResponse.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, responseToCache);
+        });
+        return networkResponse;
+      });
+    })
+  );
+});
+`;
+
+            // 3. Generate HTML Metas + Registration Script for iOS
             generatedMetaTags = `<!-- Generado por Meow CF App para target: ${currentOS.toUpperCase()} -->
 `;
             generatedMetaTags += `<link rel="manifest" href="manifest.json">
 `;
             generatedMetaTags += `<meta name="theme-color" content="${themeColor}">
 `;
-            
-            if (currentOS === 'ios' || currentOS === 'universal') {
-                generatedMetaTags += `<meta name="apple-mobile-web-app-capable" content="yes">
+            generatedMetaTags += `<meta name="apple-mobile-web-app-capable" content="yes">
 `;
-                generatedMetaTags += `<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+            generatedMetaTags += `<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 `;
-                generatedMetaTags += `<meta name="apple-mobile-web-app-title" content="${shortName}">
+            generatedMetaTags += `<meta name="apple-mobile-web-app-title" content="${shortName}">
 `;
-                generatedMetaTags += `<link rel="apple-touch-icon" href="${iconPath}">
-`;
-            }
+            generatedMetaTags += `<link rel="apple-touch-icon" href="${iconPath}">
 
-            // 3. Generate Engine Configurations
+`;
+            generatedMetaTags += `<!-- Código de registro para Service Worker iOS (Modo Offline) -->
+`;
+            generatedMetaTags += `<script>
+`;
+            generatedMetaTags += `  if ('serviceWorker' in navigator) {
+`;
+            generatedMetaTags += `    window.addEventListener('load', () => {
+`;
+            generatedMetaTags += `      navigator.serviceWorker.register('./sw.js')
+`;
+            generatedMetaTags += `        .then(reg => console.log('Service Worker listo en iOS:', reg.scope))
+`;
+            generatedMetaTags += `        .catch(err => console.error('Error registrando Service Worker:', err));
+`;
+            generatedMetaTags += `    });
+`;
+            generatedMetaTags += `  }
+`;
+            generatedMetaTags += `<\/script>
+`;
+
+            // 4. Generate Engine Configurations
             const tabCap = document.getElementById('tabCapacitor');
 
             if (selectedEngine === 'capacitor') {
@@ -1103,6 +1235,8 @@ jobs:
             activeTab = tab;
             if (tab === 'manifest') {
                 document.getElementById('outputCode').textContent = generatedManifest;
+            } else if (tab === 'sw') {
+                document.getElementById('outputCode').textContent = generatedServiceWorker;
             } else if (tab === 'workflow') {
                 document.getElementById('outputCode').textContent = generatedYmlWorkflow;
             } else if (tab === 'capacitor_config') {
@@ -1116,6 +1250,18 @@ jobs:
             const a = document.createElement('a');
             a.href = url;
             a.download = `manifest_${currentOS}_config.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadSW() {
+            const blob = new Blob([generatedServiceWorker], { type: 'text/javascript;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `sw.js`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -1139,7 +1285,7 @@ jobs:
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `head_meta_tags_${currentOS}.txt`;
+            a.download = `head_meta_tags_with_sw_${currentOS}.txt`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -1148,6 +1294,7 @@ jobs:
 
         function copyCode() {
             let codeToCopy = generatedManifest;
+            if (activeTab === 'sw') codeToCopy = generatedServiceWorker;
             if (activeTab === 'workflow') codeToCopy = generatedYmlWorkflow;
             if (activeTab === 'capacitor_config') codeToCopy = generatedCapacitorConfig;
 
