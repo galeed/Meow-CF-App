@@ -837,19 +837,96 @@
         </div>
     </main>
 
-    <!-- FULLSCREEN HELP MODAL (DICCIONARIO DE DEFINICIONES) -->
+    <!-- FULLSCREEN HELP MODAL (DICCIONARIO DE DEFINICIONES COMPLETO) -->
     <div class="help-modal" id="helpModal">
         <div class="modal-container">
             <div class="modal-header">
                 <div class="modal-title">
-                    <span>📖</span> Diccionario de Motores, Estrategias de Caché iOS y Términos Meow CF
+                    <span>📖</span> Diccionario de Términos, Motores y Caché iOS
                 </div>
                 <button class="neo-btn btn-secondary" style="padding: 6px 12px;" onclick="toggleHelpModal(false)">✖ Cerrar</button>
             </div>
 
-            <!-- Sección iOS Offline & Estrategias de Caché -->
+            <!-- Sección 1: Sistemas Operativos Objetivo -->
             <div class="dict-section">
-                <h3>🍎 Modo Offline en iOS & Estrategias de Caché (`Cache API`)</h3>
+                <h3>📌 1. Sistemas Operativos Objetivo</h3>
+                <div class="dict-grid">
+                    <div class="dict-item">
+                        <h4>🤖 Android (APK / PWA)</h4>
+                        <p>Configuración estándar para generar un archivo instalable en Android (.apk/.aab) usando herramientas como Bubblewrap, PWABuilder o Capacitor.</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>🍎 iOS (Safari WebApp / Offline)</h4>
+                        <p>Ajustes específicos para Safari Mobile en iPhone/iPad, activando el modo pantalla completa nativo de iOS, icono en inicio y Service Worker para ejecución sin internet.</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>🚀 Universal</h4>
+                        <p>Genera la lista completa de parámetros soportados globalmente por Android, iOS y navegadores de escritorio al mismo tiempo.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 2: Datos Generales de la WebApp -->
+            <div class="dict-section">
+                <h3>📝 2. Datos Generales de la WebApp</h3>
+                <div class="dict-grid">
+                    <div class="dict-item">
+                        <h4>📛 Nombre de la App (`name`)</h4>
+                        <p>El nombre completo oficial de tu aplicación web tal como aparecerá en la tienda de aplicaciones o en los instaladores.</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>🏷 Nombre Corto (`short_name`)</h4>
+                        <p>Nombre abreviado que se muestra debajo del icono en la pantalla de inicio de los teléfonos móviles cuando el espacio es reducido.</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>💬 Descripción (`description`)</h4>
+                        <p>Texto explicativo breve que describe la función principal de tu aplicación para navegadores y compiladores.</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>🚀 Start URL (`start_url`)</h4>
+                        <p>La página inicial que se cargará automáticamente cuando el usuario abra la app compilada o el icono instalado (Ejemplo: `./index.html` o `/`).</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>🌐 Scope / Alcance (`scope`)</h4>
+                        <p>Define el conjunto de URLs o directorio al que está restringida la app web. Si el usuario navega fuera de este alcance, se abrirá un navegador normal.</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>🔢 Versión (`version`)</h4>
+                        <p>Número de versión del paquete (ej. `1.0.0`) necesario para gestionar actualizaciones cuando compiles la APK.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 3: Apariencia y Comportamiento -->
+            <div class="dict-section">
+                <h3>🎨 3. Apariencia y Comportamiento</h3>
+                <div class="dict-grid">
+                    <div class="dict-item">
+                        <h4>📱 Modo de Pantalla (`display`)</h4>
+                        <p><b>Standalone:</b> Oculta la barra del navegador para que parezca una app nativa.<br><b>Fullscreen:</b> Oculta también la barra de estado del sistema (batería, hora).</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>🔄 Orientación (`orientation`)</h4>
+                        <p>Fija si la app debe mantenerse en formato vertical (Portrait), horizontal (Landscape) o adaptarse a la rotación del teléfono (Any).</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>🎨 Theme Color (`theme_color`)</h4>
+                        <p>El color que adoptará la barra de estado superior del sistema operativo y del navegador al abrir la app.</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>🖼 Background Color (`background_color`)</h4>
+                        <p>Color de fondo que se muestra mientras se carga la app antes de desplegar el contenido web (Pantalla de carga / Splash Screen).</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>🖼 Ruta del Icono (`icons`)</h4>
+                        <p>La ubicación en tu servidor o proyecto donde está guardada la imagen del icono oficial de tu app (recomendado formato PNG de 512x512 px).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 4: Modo Offline en iOS & Estrategias de Caché -->
+            <div class="dict-section">
+                <h3>🍏 4. Modo Offline en iOS & Estrategias de Caché (`Cache API`)</h3>
                 <div class="dict-grid">
                     <div class="dict-item">
                         <h4>🍏 Service Worker (`sw.js`)</h4>
@@ -878,9 +955,9 @@
                 </div>
             </div>
 
-            <!-- Sección Motores -->
+            <!-- Sección 5: Motores de Compilación Soportados -->
             <div class="dict-section">
-                <h3>⚡ Motores de Compilación Soportados</h3>
+                <h3>⚡ 5. Motores de Compilación Soportados</h3>
                 <div class="dict-grid">
                     <div class="dict-item">
                         <h4>⚡ Capacitor CLI (Ionic)</h4>
@@ -897,9 +974,9 @@
                 </div>
             </div>
 
-            <!-- Sección Datos -->
+            <!-- Sección 6: Archivos y Workflows CI/CD -->
             <div class="dict-section">
-                <h3>📝 Datos y Parámetros</h3>
+                <h3>🛠 6. Archivos y Workflows CI/CD</h3>
                 <div class="dict-grid">
                     <div class="dict-item">
                         <h4>🛠 GitHub Actions Workflow (`.github/workflows/*.yml`)</h4>
