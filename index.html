@@ -222,7 +222,7 @@
             flex-direction: column;
             gap: 6px;
             width: 100%;
-            min-width: 0; /* Previene que flex/grid se expanda mas allá del 100% */
+            min-width: 0;
         }
 
         .form-group.full-width {
@@ -842,26 +842,38 @@
         <div class="modal-container">
             <div class="modal-header">
                 <div class="modal-title">
-                    <span>📖</span> Diccionario de Motores, iOS Offline y Términos Meow CF
+                    <span>📖</span> Diccionario de Motores, Estrategias de Caché iOS y Términos Meow CF
                 </div>
                 <button class="neo-btn btn-secondary" style="padding: 6px 12px;" onclick="toggleHelpModal(false)">✖ Cerrar</button>
             </div>
 
-            <!-- Sección iOS Offline -->
+            <!-- Sección iOS Offline & Estrategias de Caché -->
             <div class="dict-section">
-                <h3>🍎 Modo Offline en iOS (Safari WebApp)</h3>
+                <h3>🍎 Modo Offline en iOS & Estrategias de Caché (`Cache API`)</h3>
                 <div class="dict-grid">
                     <div class="dict-item">
                         <h4>🍏 Service Worker (`sw.js`)</h4>
-                        <p>Script especial en JavaScript que se ejecuta en segundo plano en el iPhone. Intercepta las peticiones de red y guarda automáticamente tu aplicación HTML, CSS, JS e imágenes en la caché local del dispositivo para que funcione instantáneamente sin conexión a internet.</p>
+                        <p>Script en JavaScript que se ejecuta en segundo plano en iOS Safari. Actúa como un proxy de red programable: intercepta solicitudes HTTP/HTTPS y decide si entrega datos guardados localmente en la caché del iPhone o si consulta a internet.</p>
                     </div>
                     <div class="dict-item">
-                        <h4>📥 Estrategia Cache-First</h4>
-                        <p>Busca primero los recursos en la memoria caché guardada del teléfono y los entrega al instante. Ideal para aplicaciones web offline, juegos y utilidades en iOS.</p>
+                        <h4>📦 Precaching / Pre-caché Inicial</h4>
+                        <p>Proceso ejecutado durante la fase de instalación del Service Worker donde se descargan y guardan automáticamente los archivos esenciales (HTML, CSS, JS, fuentes e iconos). Esto garantiza que la estructura básica de la app esté lista incluso antes del primer uso sin conexión.</p>
                     </div>
                     <div class="dict-item">
-                        <h4>📲 Registro del Service Worker</h4>
-                        <p>Bloque de código JavaScript que se coloca en el `index.html` para indicarle al navegador Safari de iOS que active el archivo `sw.js` al instalar la app en el inicio.</p>
+                        <h4>📥 Estrategia: Cache First (Caché Primero)</h4>
+                        <p><strong>Función:</strong> Prioriza la memoria local del iPhone. Busca el recurso en la caché y lo entrega de forma inmediata. Si no existe en la caché, realiza la petición a internet y guarda una copia local.<br><strong>Uso ideal:</strong> Aplicaciones completamente offline, juegos web, herramientas de utilidad, reproductores locales y recursos estáticos (CSS, imágenes, JS).</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>🌐 Estrategia: Network First (Red Primero)</h4>
+                        <p><strong>Función:</strong> Intenta obtener siempre la versión más reciente desde internet. Si la conexión falla o el usuario está fuera de línea, utiliza automáticamente la copia guardada en la caché local como respaldo (fallback).<br><strong>Uso ideal:</strong> Periódicos, blogs, feeds de noticias y plataformas donde los datos cambian constantemente pero se desea mantener acceso sin conexión.</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>⚡ Estrategia: Stale-While-Revalidate</h4>
+                        <p><strong>Función:</strong> Entrega instantáneamente la versión guardada en la caché local para una carga ultrarrápida, mientras en segundo plano realiza una petición a la red para actualizar la caché con la última versión disponible para la siguiente sesión.<br><strong>Uso ideal:</strong> Redes sociales, dashboards, listas de tareas o apps con actualizaciones frecuentes donde la velocidad de inicio es crucial.</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>📲 Registro e Inscripción SW</h4>
+                        <p>Fragmento de código JavaScript que se añade al `index.html`. Notifica a Safari que debe activar `sw.js` en segundo plano cuando el usuario pulsa "Añadir a la pantalla de inicio" en su iPhone o iPad.</p>
                     </div>
                 </div>
             </div>
