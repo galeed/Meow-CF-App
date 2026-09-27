@@ -31,6 +31,12 @@
             padding: 0;
         }
 
+        html, body {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-color);
@@ -40,7 +46,6 @@
             flex-direction: column;
             background-image: radial-gradient(#000000 1px, transparent 1px);
             background-size: 24px 24px;
-            overflow-x: hidden;
         }
 
         /* Header */
@@ -53,6 +58,7 @@
             align-items: center;
             gap: 10px;
             flex-wrap: wrap;
+            width: 100%;
         }
 
         .logo {
@@ -139,10 +145,12 @@
             box-shadow: 6px 6px 0 var(--shadow-color);
             padding: 2rem;
             margin-bottom: 1.5rem;
+            width: 100%;
         }
 
         .step-panel {
             display: none;
+            width: 100%;
         }
 
         .step-panel.active {
@@ -204,14 +212,17 @@
         /* Form Styles */
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 1.2rem;
+            width: 100%;
         }
 
         .form-group {
             display: flex;
             flex-direction: column;
             gap: 6px;
+            width: 100%;
+            min-width: 0; /* Previene que flex/grid se expanda mas allá del 100% */
         }
 
         .form-group.full-width {
@@ -226,6 +237,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            word-break: break-word;
         }
 
         input[type="text"], input[type="url"], select, textarea {
@@ -239,6 +251,22 @@
             box-shadow: 3px 3px 0 var(--shadow-color);
             outline: none;
             width: 100%;
+            max-width: 100%;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        textarea {
+            white-space: normal;
+        }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 36px;
         }
 
         input[type="color"] {
@@ -262,6 +290,7 @@
             font-size: 0.78rem;
             font-weight: 600;
             color: #6B7280;
+            word-break: break-word;
         }
 
         /* Buttons */
@@ -349,6 +378,7 @@
         .code-container {
             margin-top: 1rem;
             position: relative;
+            width: 100%;
         }
 
         .code-header {
@@ -381,6 +411,7 @@
             max-height: 290px;
             font-size: 0.85rem;
             line-height: 1.4;
+            width: 100%;
         }
 
         /* Download Area */
@@ -529,6 +560,10 @@
             main {
                 width: 95%;
                 margin: 1rem auto;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
             }
 
             .stepper {
@@ -689,22 +724,22 @@
 
                 <div class="form-grid">
                     <div class="form-group full-width">
-                        <label for="buildEngine" style="color: var(--main-blue);">⚡ Motor de Compilación APK (Android / GitHub Actions)</label>
+                        <label for="buildEngine" style="color: var(--main-blue);">⚡ Motor Compilación APK (Android / CI)</label>
                         <select id="buildEngine" style="background: #EFF6FF; border-color: var(--main-blue);">
-                            <option value="capacitor">⚡ Capacitor CLI (Ionic Native Engine - Recomendado)</option>
-                            <option value="bubblewrap">🤖 Bubblewrap CLI (Google Trusted Web Activity)</option>
-                            <option value="pwabuilder">🌐 PWABuilder CLI (Microsoft PWA Engine)</option>
+                            <option value="capacitor">⚡ Capacitor CLI (Ionic Engine - Recomendado)</option>
+                            <option value="bubblewrap">🤖 Bubblewrap CLI (Google TWA)</option>
+                            <option value="pwabuilder">🌐 PWABuilder CLI (Microsoft PWA)</option>
                         </select>
                     </div>
 
                     <div class="form-group full-width">
-                        <label for="offlineStrategy" style="color: var(--accent-purple);">🍎 Estrategia Modo Offline iOS (Safari Service Worker)</label>
+                        <label for="offlineStrategy" style="color: var(--accent-purple);">🍎 Estrategia Modo Offline iOS (Safari)</label>
                         <select id="offlineStrategy" style="background: #FAF5FF; border-color: var(--accent-purple);">
-                            <option value="cache-first">🍏 Cache First (Guarda archivos e HTML locales para carga instantánea en iOS)</option>
-                            <option value="network-first">🌐 Network First con Fallback Offline (Prioriza red y respalda localmente)</option>
-                            <option value="stale-while-revalidate">⚡ Stale While Revalidate (Muestra caché instantánea y actualiza en segundo plano)</option>
+                            <option value="cache-first">🍏 Cache First (Archivos locales para carga instantánea)</option>
+                            <option value="network-first">🌐 Network First (Prioriza red con respaldo local)</option>
+                            <option value="stale-while-revalidate">⚡ Stale-While-Revalidate (Caché instantánea + actualización)</option>
                         </select>
-                        <span class="help-text">Genera un `sw.js` oficial para que iOS guarde tu webapp en la memoria del iPhone sin internet.</span>
+                        <span class="help-text">Genera un `sw.js` para que iOS guarde tu app en la memoria sin internet.</span>
                     </div>
 
                     <div class="form-group">
