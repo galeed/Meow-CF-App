@@ -7,6 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Librería JSZip para comprimir y descargar todo en ZIP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         :root {
             --bg-color: #E0E7FF;
@@ -360,6 +362,11 @@
             color: black;
         }
 
+        .btn-orange {
+            background: var(--accent-orange);
+            color: black;
+        }
+
         .btn-help {
             background: var(--accent-orange);
             color: black;
@@ -442,6 +449,21 @@
         .download-box h4 {
             font-weight: 800;
             margin-bottom: 0.4rem;
+        }
+
+        /* Master ZIP download banner box */
+        .zip-master-box {
+            background: var(--accent-yellow);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: 6px 6px 0 var(--shadow-color);
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
         }
 
         /* Fullscreen Help / About Modal */
@@ -697,6 +719,11 @@
                 padding: 12px 14px;
             }
 
+            .zip-master-box {
+                flex-direction: column;
+                text-align: center;
+            }
+
             .modal-container {
                 padding: 1.2rem;
             }
@@ -904,6 +931,15 @@
                         <button class="neo-btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem; background: #fff;" onclick="copyCode()">📋 Copiar</button>
                     </div>
                     <pre><code id="outputCode">// Cargando código...</code></pre>
+                </div>
+
+                <!-- Botón Maestro de Descarga ZIP -->
+                <div class="zip-master-box">
+                    <div>
+                        <h4 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; font-weight: 900; margin-bottom: 2px;">📦 Paquete Completo ZIP</h4>
+                        <p style="font-size: 0.85rem; font-weight: 700; color: #1E293B;">Descarga todos los archivos generados juntos (Manifiesto, Service Worker, Workflow y Config) en un solo archivo comprimido.</p>
+                    </div>
+                    <button class="neo-btn btn-orange" style="font-size: 1rem; padding: 14px 22px; background: #FFED4A; border: 3px solid #000;" onclick="downloadAllAsZip()">📥 Descargar Todo en ZIP 🚀</button>
                 </div>
 
                 <div class="download-cards">
@@ -1351,41 +1387,23 @@ self.addEventListener('fetch', (event) => {
 `;
 
             // 3. Generate HTML Metas + Registration Script for iOS
-            generatedMetaTags = `<!-- Generado por Meow CF App para target: ${currentOS.toUpperCase()} -->
-`;
-            generatedMetaTags += `<link rel="manifest" href="manifest.json">
-`;
-            generatedMetaTags += `<meta name="theme-color" content="${themeColor}">
-`;
-            generatedMetaTags += `<meta name="apple-mobile-web-app-capable" content="yes">
-`;
-            generatedMetaTags += `<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-`;
-            generatedMetaTags += `<meta name="apple-mobile-web-app-title" content="${shortName}">
-`;
-            generatedMetaTags += `<link rel="apple-touch-icon" href="${iconPath}">
-
-`;
-            generatedMetaTags += `<!-- Código de registro para Service Worker iOS (Modo Offline) -->
-`;
-            generatedMetaTags += `<script>
-`;
-            generatedMetaTags += `  if ('serviceWorker' in navigator) {
-`;
-            generatedMetaTags += `    window.addEventListener('load', () => {
-`;
-            generatedMetaTags += `      navigator.serviceWorker.register('./sw.js')
-`;
-            generatedMetaTags += `        .then(reg => console.log('Service Worker listo en iOS:', reg.scope))
-`;
-            generatedMetaTags += `        .catch(err => console.error('Error registrando Service Worker:', err));
-`;
-            generatedMetaTags += `    });
-`;
-            generatedMetaTags += `  }
-`;
-            generatedMetaTags += `<\/script>
-`;
+            generatedMetaTags = `<!-- Generado por Meow CF App para target: ${currentOS.toUpperCase()} -->\n`;
+            generatedMetaTags += `<link rel="manifest" href="manifest.json">\n`;
+            generatedMetaTags += `<meta name="theme-color" content="${themeColor}">\n`;
+            generatedMetaTags += `<meta name="apple-mobile-web-app-capable" content="yes">\n`;
+            generatedMetaTags += `<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n`;
+            generatedMetaTags += `<meta name="apple-mobile-web-app-title" content="${shortName}">\n`;
+            generatedMetaTags += `<link rel="apple-touch-icon" href="${iconPath}">\n\n`;
+            generatedMetaTags += `<!-- Código de registro para Service Worker iOS (Modo Offline) -->\n`;
+            generatedMetaTags += `<script>\n`;
+            generatedMetaTags += `  if ('serviceWorker' in navigator) {\n`;
+            generatedMetaTags += `    window.addEventListener('load', () => {\n`;
+            generatedMetaTags += `      navigator.serviceWorker.register('./sw.js')\n`;
+            generatedMetaTags += `        .then(reg => console.log('Service Worker listo en iOS:', reg.scope))\n`;
+            generatedMetaTags += `        .catch(err => console.error('Error registrando Service Worker:', err));\n`;
+            generatedMetaTags += `    });\n`;
+            generatedMetaTags += `  }\n`;
+            generatedMetaTags += `<\/script>\n`;
 
             // 4. Generate Engine Configurations
             const tabCap = document.getElementById('tabCapacitor');
@@ -1592,6 +1610,44 @@ jobs:
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+        }
+
+        // Función para descargar todos los archivos empaquetados en un ZIP usando JSZip
+        function downloadAllAsZip() {
+            if (typeof JSZip === 'undefined') {
+                alert('La librería JSZip no está cargada. Comprueba tu conexión a internet.');
+                return;
+            }
+
+            const zip = new JSZip();
+            const shortName = document.getElementById('appShortName').value || 'MeowApp';
+            const folderName = `${shortName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-bundle`;
+            const folder = zip.folder(folderName);
+
+            // Añadir archivos al ZIP
+            folder.file("manifest.json", generatedManifest);
+            folder.file("sw.js", generatedServiceWorker);
+            folder.file(`build-apk-${selectedEngine}.yml`, generatedYmlWorkflow);
+            folder.file("head_meta_tags_ios.txt", generatedMetaTags);
+
+            if (selectedEngine === 'capacitor' && generatedCapacitorConfig) {
+                folder.file("capacitor.config.json", generatedCapacitorConfig);
+            }
+
+            // Generar archivo binario ZIP y disparar descarga automática
+            zip.generateAsync({ type: "blob" }).then((content) => {
+                const url = URL.createObjectURL(content);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${folderName}.zip`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }).catch(err => {
+                console.error('Error generando archivo ZIP:', err);
+                alert('Ocurrió un error al empaquetar el archivo ZIP.');
+            });
         }
 
         function copyCode() {
