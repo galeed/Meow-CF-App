@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Meow CF App</title>
+    <title>Meow CF App - PWA to APK & Multi-Engine Studio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -16,6 +16,8 @@
             --accent-green: #86EFAC;
             --accent-pink: #F9A8D4;
             --accent-orange: #FDBA74;
+            --accent-purple: #C084FC;
+            --accent-teal: #2DD4BF;
             --border-color: #000000;
             --shadow-color: #000000;
             --border-width: 3px;
@@ -117,7 +119,6 @@
             box-shadow: 4px 4px 0 var(--shadow-color);
             font-size: 0.85rem;
             opacity: 0.65;
-            /* Eliminamos transformaciones dinámicas para estabilidad visual total */
         }
 
         .step-pill.active {
@@ -274,9 +275,9 @@
         .neo-btn {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 800;
-            font-size: 1rem;
+            font-size: 0.95rem;
             text-transform: uppercase;
-            padding: 12px 20px;
+            padding: 12px 18px;
             border: var(--border-width) solid var(--border-color);
             border-radius: 10px;
             cursor: pointer;
@@ -314,6 +315,16 @@
             color: black;
         }
 
+        .btn-purple {
+            background: var(--accent-purple);
+            color: black;
+        }
+
+        .btn-teal {
+            background: var(--accent-teal);
+            color: black;
+        }
+
         .btn-help {
             background: var(--accent-orange);
             color: black;
@@ -321,9 +332,17 @@
             font-size: 0.85rem;
         }
 
+        /* Tab Switcher */
+        .tab-switcher {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+
         /* Code Preview Box */
         .code-container {
-            margin-top: 1.2rem;
+            margin-top: 1rem;
             position: relative;
         }
 
@@ -340,6 +359,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         pre {
@@ -352,7 +373,7 @@
             border-bottom-right-radius: 10px;
             box-shadow: 4px 4px 0 var(--shadow-color);
             overflow-x: auto;
-            max-height: 320px;
+            max-height: 290px;
             font-size: 0.85rem;
             line-height: 1.4;
         }
@@ -360,7 +381,7 @@
         /* Download Area */
         .download-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
             gap: 1rem;
             margin-top: 1.5rem;
         }
@@ -407,6 +428,7 @@
             border-radius: var(--radius);
             box-shadow: 8px 8px 0 var(--shadow-color);
             padding: 2rem;
+            padding-bottom: calc(4rem + env(safe-area-inset-bottom));
         }
 
         .modal-header {
@@ -496,7 +518,7 @@
             }
 
             .tagline {
-                display: none; /* Ocultar tagline en móviles muy pequeños para ahorrar espacio */
+                display: none;
             }
 
             main {
@@ -553,7 +575,7 @@
             <span>Meow CF App</span>
         </div>
         <div class="header-actions">
-            <div class="tagline">PWA & APK Studio</div>
+            <div class="tagline">PWA & APK Multi-Engine Studio</div>
             <button class="neo-btn btn-help" onclick="toggleHelpModal(true)">
                 <span>📖</span> Diccionario / Ayuda
             </button>
@@ -566,8 +588,8 @@
         <div class="stepper">
             <div class="step-pill active" id="pill-step-1">1. Sistema</div>
             <div class="step-pill" id="pill-step-2">2. Datos App</div>
-            <div class="step-pill" id="pill-step-3">3. Apariencia</div>
-            <div class="step-pill" id="pill-step-4">4. Descarga</div>
+            <div class="step-pill" id="pill-step-3">3. Motor / CI</div>
+            <div class="step-pill" id="pill-step-4">4. Descargar</div>
         </div>
 
         <!-- Container Card -->
@@ -576,13 +598,13 @@
             <!-- STEP 1: Select OS -->
             <div class="step-panel active" id="step-1">
                 <h2 class="panel-title"><span>⚡</span> Paso 1: Sistema Objetivo</h2>
-                <p class="panel-desc">Elige la plataforma o motor de compilación para generar la configuración adecuada.</p>
+                <p class="panel-desc">Elige la plataforma base para estructurar tus archivos de configuración.</p>
                 
                 <div class="os-grid">
                     <div class="os-card selected" onclick="selectOS('android', this)">
                         <div class="os-icon">🤖</div>
                         <div class="os-title">Android (APK)</div>
-                        <p style="font-size: 0.8rem; margin-top: 6px; font-weight: 600;">Bubblewrap / PWABuilder / Capacitor</p>
+                        <p style="font-size: 0.8rem; margin-top: 6px; font-weight: 600;">Capacitor / Bubblewrap / PWABuilder</p>
                     </div>
                     <div class="os-card" onclick="selectOS('ios', this)">
                         <div class="os-icon">🍎</div>
@@ -592,7 +614,7 @@
                     <div class="os-card" onclick="selectOS('universal', this)">
                         <div class="os-icon">🚀</div>
                         <div class="os-title">Universal</div>
-                        <p style="font-size: 0.8rem; margin-top: 6px; font-weight: 600;">Manifest.json + iOS Metas + Multiplataforma</p>
+                        <p style="font-size: 0.8rem; margin-top: 6px; font-weight: 600;">Manifest.json + Workflows Multiplataforma</p>
                     </div>
                 </div>
 
@@ -605,7 +627,7 @@
             <!-- STEP 2: App Data -->
             <div class="step-panel" id="step-2">
                 <h2 class="panel-title"><span>📝</span> Paso 2: Información General</h2>
-                <p class="panel-desc">Llena los datos requeridos para estructurar la identificación de tu app web.</p>
+                <p class="panel-desc">Llena los datos requeridos para estructurar la identidad de tu app.</p>
 
                 <div class="form-grid">
                     <div class="form-group">
@@ -651,18 +673,28 @@
 
                 <div class="btn-group">
                     <button class="neo-btn btn-secondary" onclick="nextStep(1)">⬅ Atrás</button>
-                    <button class="neo-btn btn-primary" onclick="nextStep(3)">Siguiente: Apariencia ➔</button>
+                    <button class="neo-btn btn-primary" onclick="nextStep(3)">Siguiente: Motor / CI ➔</button>
                 </div>
             </div>
 
-            <!-- STEP 3: Appearance & Config -->
+            <!-- STEP 3: Appearance & Engine Config -->
             <div class="step-panel" id="step-3">
-                <h2 class="panel-title"><span>🎨</span> Paso 3: Apariencia Visual</h2>
-                <p class="panel-desc">Ajusta los colores y el modo de ventana con el que se abrirá en el móvil.</p>
+                <h2 class="panel-title"><span>⚙️</span> Paso 3: Apariencia y Motor de Compilación</h2>
+                <p class="panel-desc">Ajusta la apariencia visual y selecciona tu motor preferido para GitHub Actions.</p>
 
                 <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="buildEngine" style="color: var(--main-blue);">⚡ Motor de Compilación Seleccionado</label>
+                        <select id="buildEngine" style="background: #EFF6FF; border-color: var(--main-blue);">
+                            <option value="capacitor">⚡ Capacitor CLI (Ionic Native Engine - Muy Robusto)</option>
+                            <option value="bubblewrap">🤖 Bubblewrap CLI (Google Trusted Web Activity)</option>
+                            <option value="pwabuilder">🌐 PWABuilder CLI (Microsoft PWA Engine)</option>
+                        </select>
+                        <span class="help-text">Elige qué herramienta automatizará la generación de la APK en GitHub Actions.</span>
+                    </div>
+
                     <div class="form-group">
-                        <label for="displayMode">Modo de Pantalla (Display)</label>
+                        <label for="displayMode">Modo de Pantalla</label>
                         <select id="displayMode">
                             <option value="standalone">Standalone (App nativa sin barra)</option>
                             <option value="fullscreen">Fullscreen (Pantalla Completa)</option>
@@ -681,12 +713,12 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="themeColor">Color de Tema (Theme Color)</label>
+                        <label for="themeColor">Color de Tema</label>
                         <input type="color" id="themeColor" value="#3B82F6">
                     </div>
 
                     <div class="form-group">
-                        <label for="bgColor">Color de Fondo (Background Color)</label>
+                        <label for="bgColor">Color de Fondo</label>
                         <input type="color" id="bgColor" value="#FFFFFF">
                     </div>
 
@@ -698,39 +730,50 @@
 
                 <div class="btn-group">
                     <button class="neo-btn btn-secondary" onclick="nextStep(2)">⬅ Atrás</button>
-                    <button class="neo-btn btn-success" onclick="generateManifest(); nextStep(4);">Generar Manifiesto 🚀</button>
+                    <button class="neo-btn btn-success" onclick="generateAllOutputs(); nextStep(4);">Generar Todo 🚀</button>
                 </div>
             </div>
 
             <!-- STEP 4: Output & Download -->
             <div class="step-panel" id="step-4">
-                <h2 class="panel-title"><span>🎉</span> Paso 4: Descargar Archivo TXT</h2>
-                <p class="panel-desc">Tu archivo de configuración `manifest.json` está listo para ser guardado como `.txt`.</p>
+                <h2 class="panel-title"><span>🎉</span> Paso 4: Código y Archivos de Automatización Generados</h2>
+                <p class="panel-desc">Visualiza o descarga el manifiesto y el workflow YAML generado para tu motor seleccionado.</p>
 
+                <!-- Bloque de Selección de Código -->
                 <div class="code-container">
                     <div class="code-header">
-                        <span id="code-filename">manifest_android.json.txt</span>
-                        <button class="neo-btn btn-yellow" style="padding: 4px 8px; font-size: 0.75rem;" onclick="copyCode()">📋 Copiar Código</button>
+                        <div class="tab-switcher">
+                            <button class="neo-btn btn-yellow" style="padding: 4px 8px; font-size: 0.72rem;" onclick="switchTab('manifest')">📄 manifest.json</button>
+                            <button class="neo-btn btn-purple" style="padding: 4px 8px; font-size: 0.72rem;" onclick="switchTab('workflow')">⚙️ Workflow YAML</button>
+                            <button class="neo-btn btn-teal" style="padding: 4px 8px; font-size: 0.72rem;" onclick="switchTab('capacitor_config')" id="tabCapacitor" style="display:none;">🛠 capacitor.config</button>
+                        </div>
+                        <button class="neo-btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem; background: #fff;" onclick="copyCode()">📋 Copiar</button>
                     </div>
-                    <pre><code id="outputCode">// Generando código...</code></pre>
+                    <pre><code id="outputCode">// Cargando código...</code></pre>
                 </div>
 
                 <div class="download-cards">
                     <div class="download-box">
-                        <h4>📄 Manifiesto Principal (.txt)</h4>
-                        <p style="font-size: 0.8rem; margin-bottom: 10px; font-weight: 600;">Descarga directa en formato texto plano.</p>
-                        <button class="neo-btn btn-success" style="width: 100%; font-size: 0.88rem;" onclick="downloadTXT()">📥 Descargar .TXT</button>
+                        <h4>📄 Manifiesto (.txt)</h4>
+                        <p style="font-size: 0.78rem; margin-bottom: 8px; font-weight: 600;">Configuración PWA en texto plano.</p>
+                        <button class="neo-btn btn-success" style="width: 100%; font-size: 0.85rem;" onclick="downloadTXT()">📥 Descargar .TXT</button>
+                    </div>
+
+                    <div class="download-box" style="background: #FAF5FF; border-color: var(--border-color);">
+                        <h4>⚙️ GitHub Actions (.yml)</h4>
+                        <p style="font-size: 0.78rem; margin-bottom: 8px; font-weight: 600;" id="engineYmlDesc">Workflow automatizado para compilar APK.</p>
+                        <button class="neo-btn btn-purple" style="width: 100%; font-size: 0.85rem;" onclick="downloadYML()">📥 Descargar .YML</button>
                     </div>
 
                     <div class="download-box">
-                        <h4>🏷 Etiquetas HTML Metas (.txt)</h4>
-                        <p style="font-size: 0.8rem; margin-bottom: 10px; font-weight: 600;">Etiquetas para el &lt;head&gt; de tu index.html</p>
-                        <button class="neo-btn btn-yellow" style="width: 100%; font-size: 0.88rem;" onclick="downloadHTMLMetaTXT()">📥 Descargar Metas (.txt)</button>
+                        <h4>🏷 Metas HTML (.txt)</h4>
+                        <p style="font-size: 0.78rem; margin-bottom: 8px; font-weight: 600;">Etiquetas para el &lt;head&gt; de tu index.html.</p>
+                        <button class="neo-btn btn-yellow" style="width: 100%; font-size: 0.85rem;" onclick="downloadHTMLMetaTXT()">📥 Descargar Metas</button>
                     </div>
                 </div>
 
                 <div class="btn-group">
-                    <button class="neo-btn btn-secondary" onclick="nextStep(3)">⬅ Modificar Datos</button>
+                    <button class="neo-btn btn-secondary" onclick="nextStep(3)">⬅ Modificar Motor/Datos</button>
                     <button class="neo-btn btn-primary" onclick="nextStep(1)">🔄 Iniciar Nuevo</button>
                 </div>
             </div>
@@ -743,84 +786,41 @@
         <div class="modal-container">
             <div class="modal-header">
                 <div class="modal-title">
-                    <span>📖</span> Diccionario de Términos Meow CF
+                    <span>📖</span> Diccionario de Motores y Términos Meow CF
                 </div>
                 <button class="neo-btn btn-secondary" style="padding: 6px 12px;" onclick="toggleHelpModal(false)">✖ Cerrar</button>
             </div>
 
-            <!-- Sección 1 -->
+            <!-- Sección Motores -->
             <div class="dict-section">
-                <h3>📌 1. Sistemas Operativos Objetivo</h3>
+                <h3>⚡ Motores de Compilación Soportados</h3>
                 <div class="dict-grid">
                     <div class="dict-item">
-                        <h4>🤖 Android (APK / PWA)</h4>
-                        <p>Configuración estándar para generar un archivo instalable en Android (.apk/.aab) usando herramientas como Bubblewrap, PWABuilder o Capacitor.</p>
+                        <h4>⚡ Capacitor CLI (Ionic)</h4>
+                        <p>El motor nativo moderno preferido para envolver proyectos web en aplicaciones Android e iOS nativas completas, ofreciendo máxima compatibilidad con plugins de hardware.</p>
                     </div>
                     <div class="dict-item">
-                        <h4>🍎 iOS (Safari WebApp)</h4>
-                        <p>Ajustes específicos para Safari Mobile en iPhone/iPad, activando el modo pantalla completa nativo de iOS y el icono en la pantalla de inicio.</p>
+                        <h4>🤖 Google Bubblewrap CLI</h4>
+                        <p>Herramienta oficial de Google que transforma una PWA en un paquete Android Trusted Web Activity (TWA) ligero y de alto rendimiento.</p>
                     </div>
                     <div class="dict-item">
-                        <h4>🚀 Universal</h4>
-                        <p>Genera la lista completa de parámetros soportados globalmente por Android, iOS y navegadores de escritorio al mismo tiempo.</p>
+                        <h4>🌐 Microsoft PWABuilder</h4>
+                        <p>Plataforma impulsada por Microsoft para empaquetar aplicaciones web progresivas en tiendas de aplicaciones como Google Play Store y Microsoft Store.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Sección 2 -->
+            <!-- Sección Datos -->
             <div class="dict-section">
-                <h3>📝 2. Datos Generales de la WebApp</h3>
+                <h3>📝 Datos y Parámetros</h3>
                 <div class="dict-grid">
                     <div class="dict-item">
-                        <h4>📛 Nombre de la App (`name`)</h4>
-                        <p>El nombre completo oficial de tu aplicación web tal como aparecerá en la tienda de aplicaciones o en los instaladores.</p>
+                        <h4>🛠 GitHub Actions Workflow (`.github/workflows/*.yml`)</h4>
+                        <p>El script en YAML que se sube a tu repositorio para que los servidores de GitHub instalen el SDK de Android, compilen tu APK en segundo plano y te permitan descargar el archivo ejecutable listo.</p>
                     </div>
                     <div class="dict-item">
-                        <h4>🏷 Nombre Corto (`short_name`)</h4>
-                        <p>Nombre abreviado que se muestra debajo del icono en la pantalla de inicio de los teléfonos móviles cuando el espacio es reducido.</p>
-                    </div>
-                    <div class="dict-item">
-                        <h4>💬 Descripción (`description`)</h4>
-                        <p>Texto explicativo breve que describe la función principal de tu aplicación para navegadores y compiladores.</p>
-                    </div>
-                    <div class="dict-item">
-                        <h4>🚀 Start URL (`start_url`)</h4>
-                        <p>La página inicial que se cargará automáticamente cuando el usuario abra la app compilada o el icono instalado (Ejemplo: `./index.html` o `/`).</p>
-                    </div>
-                    <div class="dict-item">
-                        <h4>🌐 Scope / Alcance (`scope`)</h4>
-                        <p>Define el conjunto de URLs o directorio al que está restringida la app web. Si el usuario navega fuera de este alcance, se abrirá un navegador normal.</p>
-                    </div>
-                    <div class="dict-item">
-                        <h4>🔢 Versión (`version`)</h4>
-                        <p>Número de versión del paquete (ej. `1.0.0`) necesario para gestionar actualizaciones cuando compiles la APK.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sección 3 -->
-            <div class="dict-section">
-                <h3>🎨 3. Apariencia y Comportamiento</h3>
-                <div class="dict-grid">
-                    <div class="dict-item">
-                        <h4>📱 Modo de Pantalla (`display`)</h4>
-                        <p><b>Standalone:</b> Oculta la barra del navegador para que parezca una app nativa.<br><b>Fullscreen:</b> Oculta también la barra de estado del sistema (batería, hora).</p>
-                    </div>
-                    <div class="dict-item">
-                        <h4>🔄 Orientación (`orientation`)</h4>
-                        <p>Fija si la app debe mantenerse en formato vertical (Portrait), horizontal (Landscape) o adaptarse a la rotación del teléfono (Any).</p>
-                    </div>
-                    <div class="dict-item">
-                        <h4>🎨 Theme Color (`theme_color`)</h4>
-                        <p>El color que adoptará la barra de estado superior del sistema operativo y del navegador al abrir la app.</p>
-                    </div>
-                    <div class="dict-item">
-                        <h4>🖼 Background Color (`background_color`)</h4>
-                        <p>Color de fondo que se muestra mientras se carga la app antes de desplegar el contenido web (Pantalla de carga / Splash Screen).</p>
-                    </div>
-                    <div class="dict-item">
-                        <h4>🖼 Ruta del Icono (`icons`)</h4>
-                        <p>La ubicación en tu servidor o proyecto donde está guardada la imagen del icono oficial de tu app (recomendado formato PNG de 512x512 px).</p>
+                        <h4>⚙️ Capacitor Config (`capacitor.config.json`)</h4>
+                        <p>Archivo de configuración JSON que indica a Capacitor el App ID nativo (ej. `com.meowapp.app`) y la ubicación de tus archivos HTML locales.</p>
                     </div>
                 </div>
             </div>
@@ -839,14 +839,18 @@
     <!-- JavaScript Logic -->
     <script>
         let currentOS = 'android';
+        let selectedEngine = 'capacitor';
         let generatedManifest = '';
         let generatedMetaTags = '';
+        let generatedYmlWorkflow = '';
+        let generatedCapacitorConfig = '';
+        let activeTab = 'manifest';
 
         function toggleHelpModal(show) {
             const modal = document.getElementById('helpModal');
             if (show) {
                 modal.classList.add('active');
-                document.body.style.overflow = 'hidden'; // Evitar scroll del fondo
+                document.body.style.overflow = 'hidden';
             } else {
                 modal.classList.remove('active');
                 document.body.style.overflow = 'auto';
@@ -860,11 +864,9 @@
         }
 
         function nextStep(stepNumber) {
-            // Update panels
             document.querySelectorAll('.step-panel').forEach(panel => panel.classList.remove('active'));
             document.getElementById(`step-${stepNumber}`).classList.add('active');
 
-            // Update pills
             for (let i = 1; i <= 4; i++) {
                 const pill = document.getElementById(`pill-step-${i}`);
                 pill.classList.remove('active', 'completed');
@@ -876,11 +878,11 @@
             }
 
             if(stepNumber === 4) {
-                generateManifest();
+                generateAllOutputs();
             }
         }
 
-        function generateManifest() {
+        function generateAllOutputs() {
             const name = document.getElementById('appName').value || 'WebApp';
             const shortName = document.getElementById('appShortName').value || name;
             const desc = document.getElementById('appDesc').value || '';
@@ -892,7 +894,12 @@
             const themeColor = document.getElementById('themeColor').value;
             const bgColor = document.getElementById('bgColor').value;
             const iconPath = document.getElementById('iconPath').value || 'icon.png';
+            selectedEngine = document.getElementById('buildEngine').value;
 
+            const safeAppId = `com.meowcf.${shortName.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+            const safeRepoSlug = shortName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+
+            // 1. Generate Manifest
             const manifestObj = {
                 "name": name,
                 "short_name": shortName,
@@ -927,7 +934,7 @@
 
             generatedManifest = JSON.stringify(manifestObj, null, 2);
 
-            // Generate HTML Metas based on target OS
+            // 2. Generate HTML Metas
             generatedMetaTags = `<!-- Generado por Meow CF App para target: ${currentOS.toUpperCase()} -->
 `;
             generatedMetaTags += `<link rel="manifest" href="manifest.json">
@@ -946,8 +953,161 @@
 `;
             }
 
-            document.getElementById('outputCode').textContent = generatedManifest;
-            document.getElementById('code-filename').textContent = `manifest_${currentOS}.json.txt`;
+            // 3. Generate Engine Configurations
+            const tabCap = document.getElementById('tabCapacitor');
+
+            if (selectedEngine === 'capacitor') {
+                tabCap.style.display = 'inline-flex';
+                generatedCapacitorConfig = JSON.stringify({
+                    "appId": safeAppId,
+                    "appName": shortName,
+                    "webDir": "./",
+                    "bundledWebRuntime": false
+                }, null, 2);
+
+                document.getElementById('engineYmlDesc').textContent = 'Workflow con Capacitor CLI + Android Gradle SDK.';
+                generatedYmlWorkflow = `# Meow CF App - Capacitor CLI APK Build Workflow
+name: Build Android APK (Capacitor)
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Configurar Java JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Configurar Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Instalar Capacitor CLI
+        run: |
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npx cap init "${shortName}" "${safeAppId}" --web-dir ./
+          npx cap add android
+          npx cap copy
+
+      - name: Compilar APK con Gradle
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Subir APK Generada
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${safeRepoSlug}-capacitor-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+`;
+            } else if (selectedEngine === 'pwabuilder') {
+                tabCap.style.display = 'none';
+                document.getElementById('engineYmlDesc').textContent = 'Workflow con PWABuilder CLI Engine.';
+                generatedYmlWorkflow = `# Meow CF App - PWABuilder CLI Workflow
+name: Build Android APK (PWABuilder)
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  pwa-builder-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Instalar PWABuilder CLI
+        run: npm install -g @pwabuilder/cli
+
+      - name: Generar Paquete APK
+        run: |
+          pwa-builder package --manifest=manifest.json --platform=android
+
+      - name: Subir APK Artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${safeRepoSlug}-pwabuilder-apk
+          path: ./*.apk
+`;
+            } else {
+                // Bubblewrap Default
+                tabCap.style.display = 'none';
+                document.getElementById('engineYmlDesc').textContent = 'Workflow con Google Bubblewrap CLI Engine.';
+                generatedYmlWorkflow = `# Meow CF App - Bubblewrap CLI Workflow
+name: Build Android APK (Bubblewrap)
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Configurar Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Instalar Bubblewrap CLI
+        run: npm install -g @bubblewrap/cli
+
+      - name: Generar TWA APK
+        run: |
+          bubblewrap init --manifest=manifest.json || true
+          bubblewrap build
+
+      - name: Subir APK Artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${safeRepoSlug}-bubblewrap-apk
+          path: ./*.apk
+`;
+            }
+
+            switchTab(activeTab);
+        }
+
+        function switchTab(tab) {
+            activeTab = tab;
+            if (tab === 'manifest') {
+                document.getElementById('outputCode').textContent = generatedManifest;
+            } else if (tab === 'workflow') {
+                document.getElementById('outputCode').textContent = generatedYmlWorkflow;
+            } else if (tab === 'capacitor_config') {
+                document.getElementById('outputCode').textContent = generatedCapacitorConfig;
+            }
         }
 
         function downloadTXT() {
@@ -956,6 +1116,18 @@
             const a = document.createElement('a');
             a.href = url;
             a.download = `manifest_${currentOS}_config.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadYML() {
+            const blob = new Blob([generatedYmlWorkflow], { type: 'text/yaml;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `build-apk-${selectedEngine}.yml`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -975,7 +1147,11 @@
         }
 
         function copyCode() {
-            navigator.clipboard.writeText(generatedManifest).then(() => {
+            let codeToCopy = generatedManifest;
+            if (activeTab === 'workflow') codeToCopy = generatedYmlWorkflow;
+            if (activeTab === 'capacitor_config') codeToCopy = generatedCapacitorConfig;
+
+            navigator.clipboard.writeText(codeToCopy).then(() => {
                 alert('¡Código copiado al portapapeles!');
             });
         }
