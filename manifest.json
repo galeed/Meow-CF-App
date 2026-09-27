@@ -26,3 +26,36 @@
   "related_applications": [],
   "prefer_related_applications": false
 }
+<!-- Configuración Avanzada Meow CF App -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#3b82f6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MeowCF">
+<link rel="apple-touch-icon" href="assets/icon.ico">
+
+<!-- Control de Enlaces Externos (external-browser) -->
+<script>
+  document.addEventListener('click', (e) => {
+    const anchor = e.target.closest('a');
+    if (anchor && anchor.href && anchor.hostname !== window.location.hostname) {
+      // Abre en navegador predeterminado externo
+      e.preventDefault();
+      window.open(anchor.href, '_system');
+    }
+  });
+</script>
+
+<!-- Script Splash Screen (2000ms) -->
+<div id="meow-splash" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:#ffffff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;transition:opacity 0.5s ease;">
+  <img src="assets/icon.ico" alt="Logo" style="width:96px;height:96px;border-radius:16px;margin-bottom:16px;box-shadow:4px 4px 0 #000;">
+  <h2 style="font-family:sans-serif;font-weight:900;color:#3b82f6;">MeowCF</h2>
+</div>
+<script>
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const s = document.getElementById('meow-splash');
+      if(s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 500); }
+    }, 2000);
+  });
+</script>
