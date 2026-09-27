@@ -114,7 +114,8 @@
             display: flex;
             justify-content: space-between;
             margin-bottom: 1.5rem;
-            gap: 8px;
+            gap: 6px;
+            overflow-x: auto;
         }
 
         .step-pill {
@@ -126,8 +127,9 @@
             font-weight: 800;
             text-align: center;
             box-shadow: 4px 4px 0 var(--shadow-color);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             opacity: 0.65;
+            white-space: nowrap;
         }
 
         .step-pill.active {
@@ -243,7 +245,7 @@
             word-break: break-word;
         }
 
-        input[type="text"], input[type="url"], select, textarea {
+        input[type="text"], input[type="url"], select, textarea, input[type="number"] {
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-weight: 700;
             padding: 12px 14px;
@@ -287,6 +289,27 @@
         input:focus, select:focus, textarea:focus {
             background: #FFF;
             border-color: var(--main-blue);
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            cursor: pointer;
+            background: #F8FAFC;
+            border: var(--border-width) solid var(--border-color);
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 3px 3px 0 var(--shadow-color);
+        }
+
+        .checkbox-label input {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--main-blue);
+            cursor: pointer;
         }
 
         .help-text {
@@ -691,7 +714,7 @@
 
             .stepper {
                 display: grid;
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: repeat(2, 1fr);
                 gap: 6px;
             }
 
@@ -755,12 +778,13 @@
 
     <!-- Main Content -->
     <main>
-        <!-- Stepper -->
+        <!-- Stepper (Expandido a 5 pasos con las nuevas funciones) -->
         <div class="stepper">
             <div class="step-pill active" id="pill-step-1">1. Sistema</div>
             <div class="step-pill" id="pill-step-2">2. Datos App</div>
             <div class="step-pill" id="pill-step-3">3. Motor / Offline</div>
-            <div class="step-pill" id="pill-step-4">4. Descargar</div>
+            <div class="step-pill" id="pill-step-4">4. Avanzado (UX & Push)</div>
+            <div class="step-pill" id="pill-step-5">5. Descargar</div>
         </div>
 
         <!-- Container Card -->
@@ -910,21 +934,97 @@
 
                 <div class="btn-group">
                     <button class="neo-btn btn-secondary" onclick="nextStep(2)">⬅ Atrás</button>
-                    <button class="neo-btn btn-success" onclick="generateAllOutputs(); nextStep(4);">Generar Todo 🚀</button>
+                    <button class="neo-btn btn-primary" onclick="nextStep(4)">Siguiente: Avanzado ➔</button>
                 </div>
             </div>
 
-            <!-- STEP 4: Output & Download -->
+            <!-- STEP 4: Advanced Features (Navegación, Splash, Push, Modo Oscuro, Hardware & Banner Offline) -->
             <div class="step-panel" id="step-4">
-                <h2 class="panel-title"><span>🎉</span> Paso 4: Código, Service Worker iOS y Workflows Generados</h2>
-                <p class="panel-desc">Visualiza o descarga el manifiesto, el Service Worker para iOS y el workflow YAML.</p>
+                <h2 class="panel-title"><span>🚀</span> Paso 4: Configuración Avanzada (UX, Push & Hardware)</h2>
+                <p class="panel-desc">Implementa control de navegación de enlaces, splash screen, notificaciones push, modo oscuro dinámico, indicador offline y permisos de hardware.</p>
+
+                <div class="form-grid">
+                    <!-- Control de navegación de enlaces -->
+                    <div class="form-group full-width">
+                        <label for="linkOpeningBehavior" style="color: var(--main-blue);">🌐 Apertura de Enlaces Externos</label>
+                        <select id="linkOpeningBehavior" style="background: #EFF6FF; border-color: var(--main-blue);">
+                            <option value="external-browser">Abrir en el navegador predeterminado del dispositivo (Chrome / Safari)</option>
+                            <option value="same-app">Abrir dentro de la misma app (WebView / PWA interna)</option>
+                        </select>
+                        <span class="help-text">Define si los links externos abren fuera o dentro del contenedor de la aplicación.</span>
+                    </div>
+
+                    <!-- Splash Screen Config -->
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="enableSplashScreen" checked>
+                            <span>Activar Pantalla de Carga (Splash Screen)</span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="splashDuration">Duración Splash (ms)</label>
+                        <input type="number" id="splashDuration" value="2000" step="500" min="500" max="5000">
+                    </div>
+
+                    <!-- Push Notifications -->
+                    <div class="form-group full-width">
+                        <label class="checkbox-label" style="background: #FAF5FF; border-color: var(--accent-purple);">
+                            <input type="checkbox" id="enablePush" checked>
+                            <span>Activar Notificaciones Push (Firebase / Web Push API)</span>
+                        </label>
+                        <span class="help-text">Incluye código de registro para alertas push en dispositivos móviles.</span>
+                    </div>
+
+                    <!-- Dark Mode / Dynamic Theme -->
+                    <div class="form-group">
+                        <label class="checkbox-label" style="background: #FEF08A; border-color: var(--border-color);">
+                            <input type="checkbox" id="enableDarkMode" checked>
+                            <span>Soporte de Tema Oscuro Dinámico (Dark Mode)</span>
+                        </label>
+                    </div>
+
+                    <!-- Offline Connectivity Banner -->
+                    <div class="form-group">
+                        <label class="checkbox-label" style="background: #86EFAC; border-color: var(--border-color);">
+                            <input type="checkbox" id="enableOfflineBanner" checked>
+                            <span>Banner Alerta Conexión Offline / Online en Vivo</span>
+                        </label>
+                    </div>
+
+                    <!-- Hardware Permissions -->
+                    <div class="form-group full-width" style="margin-top: 0.5rem;">
+                        <label style="color: var(--accent-orange); margin-bottom: 4px;">🛠 Permisos de Hardware Necesarios</label>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px;">
+                            <label class="checkbox-label" style="font-size: 0.8rem; padding: 8px;">
+                                <input type="checkbox" id="permCamera"> Cámara
+                            </label>
+                            <label class="checkbox-label" style="font-size: 0.8rem; padding: 8px;">
+                                <input type="checkbox" id="permMic"> Micrófono / Audio
+                            </label>
+                            <label class="checkbox-label" style="font-size: 0.8rem; padding: 8px;">
+                                <input type="checkbox" id="permGeo"> Geolocalización (GPS)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="neo-btn btn-secondary" onclick="nextStep(3)">⬅ Atrás</button>
+                    <button class="neo-btn btn-success" onclick="generateAllOutputs(); nextStep(5);">Generar Todo 🚀</button>
+                </div>
+            </div>
+
+            <!-- STEP 5: Output & Download -->
+            <div class="step-panel" id="step-5">
+                <h2 class="panel-title"><span>🎉</span> Paso 5: Código, Service Worker iOS y Workflows Generados</h2>
+                <p class="panel-desc">Visualiza o descarga el manifiesto, el Service Worker con banner offline/push y el workflow YAML.</p>
 
                 <!-- Bloque de Selección de Código -->
                 <div class="code-container">
                     <div class="code-header">
                         <div class="tab-switcher">
                             <button class="neo-btn btn-yellow" style="padding: 4px 8px; font-size: 0.72rem;" onclick="switchTab('manifest')">📄 manifest.json</button>
-                            <button class="neo-btn btn-pink" style="padding: 4px 8px; font-size: 0.72rem;" onclick="switchTab('sw')">🍎 sw.js (iOS Offline)</button>
+                            <button class="neo-btn btn-pink" style="padding: 4px 8px; font-size: 0.72rem;" onclick="switchTab('sw')">🍎 sw.js (Offline + Push)</button>
                             <button class="neo-btn btn-purple" style="padding: 4px 8px; font-size: 0.72rem;" onclick="switchTab('workflow')">⚙️ Workflow YAML</button>
                             <button class="neo-btn btn-teal" style="padding: 4px 8px; font-size: 0.72rem;" onclick="switchTab('capacitor_config')" id="tabCapacitor" style="display:none;">🛠 capacitor.config</button>
                         </div>
@@ -937,7 +1037,7 @@
                 <div class="zip-master-box">
                     <div>
                         <h4 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; font-weight: 900; margin-bottom: 2px;">📦 Paquete Completo ZIP</h4>
-                        <p style="font-size: 0.85rem; font-weight: 700; color: #1E293B;">Descarga todos los archivos generados juntos (Manifiesto, Service Worker, Workflow y Config) en un solo archivo comprimido.</p>
+                        <p style="font-size: 0.85rem; font-weight: 700; color: #1E293B;">Descarga todos los archivos generados juntos (Manifiesto, Service Worker con Push/Offline, Workflow y Config) en un solo archivo comprimido.</p>
                     </div>
                     <button class="neo-btn btn-orange" style="font-size: 1rem; padding: 14px 22px; background: #FFED4A; border: 3px solid #000;" onclick="downloadAllAsZip()">📥 Descargar Todo en ZIP 🚀</button>
                 </div>
@@ -945,7 +1045,7 @@
                 <div class="download-cards">
                     <div class="download-box" style="background: #FFF1F2; border-color: var(--border-color);">
                         <h4>🍎 iOS Service Worker (`sw.js`)</h4>
-                        <p style="font-size: 0.78rem; margin-bottom: 8px; font-weight: 600;">Guarda el caché para que Safari en iPhone funcione sin internet.</p>
+                        <p style="font-size: 0.78rem; margin-bottom: 8px; font-weight: 600;">Guarda el caché, notificaciones Push y banner offline.</p>
                         <button class="neo-btn btn-pink" style="width: 100%; font-size: 0.85rem;" onclick="downloadSW()">📥 Descargar `sw.js`</button>
                     </div>
 
@@ -962,14 +1062,14 @@
                     </div>
 
                     <div class="download-box">
-                        <h4>🏷 Metas + Registro SW (.txt)</h4>
-                        <p style="font-size: 0.78rem; margin-bottom: 8px; font-weight: 600;">Etiquetas HTML e inscripción del Service Worker.</p>
+                        <h4>🏷 Metas + Snippets (.txt)</h4>
+                        <p style="font-size: 0.78rem; margin-bottom: 8px; font-weight: 600;">Etiquetas HTML, Splash, Links y Banner Offline.</p>
                         <button class="neo-btn btn-yellow" style="width: 100%; font-size: 0.85rem;" onclick="downloadHTMLMetaTXT()">📥 Descargar Metas</button>
                     </div>
                 </div>
 
                 <div class="btn-group">
-                    <button class="neo-btn btn-secondary" onclick="nextStep(3)">⬅ Modificar Motor/Datos</button>
+                    <button class="neo-btn btn-secondary" onclick="nextStep(4)">⬅ Modificar Opciones Avanzadas</button>
                     <button class="neo-btn btn-primary" onclick="nextStep(1)">🔄 Iniciar Nuevo</button>
                 </div>
             </div>
@@ -1064,33 +1164,33 @@
                 </div>
             </div>
 
-            <!-- Sección 4: Modo Offline en iOS & Estrategias de Caché -->
+            <!-- Sección 4: Nuevas Funciones Avanzadas (Navegación, Splash, Push, Modo Oscuro, Offline & Hardware) -->
             <div class="dict-section">
-                <h3>🍏 4. Modo Offline en iOS & Estrategias de Caché (`Cache API`)</h3>
+                <h3>🚀 4. Funciones Avanzadas (UX, Push & Hardware)</h3>
                 <div class="dict-grid">
                     <div class="dict-item">
-                        <h4>🍏 Service Worker (`sw.js`)</h4>
-                        <p>Script en JavaScript que se ejecuta en segundo plano en iOS Safari. Actúa como un proxy de red programable: intercepta solicitudes HTTP/HTTPS y decide si entrega datos guardados localmente en la caché del iPhone o si consulta a internet.</p>
+                        <h4>🌐 Apertura de Enlaces</h4>
+                        <p>Permite configurar si los enlaces externos abren en el navegador predeterminado del sistema (Chrome/Safari) o dentro de un contenedor WebView integrado en la misma app.</p>
                     </div>
                     <div class="dict-item">
-                        <h4>📦 Precaching / Pre-caché Inicial</h4>
-                        <p>Proceso ejecutado durante la fase de instalación del Service Worker donde se descargan y guardan automáticamente los archivos esenciales (HTML, CSS, JS, fuentes e iconos). Esto garantiza que la estructura básica de la app esté lista incluso antes del primer uso sin conexión.</p>
+                        <h4>⏳ Splash Screen</h4>
+                        <p>Pantalla de bienvenida interactiva con temporizador ajustable para evitar destellos en blanco mientras carga el motor de la app.</p>
                     </div>
                     <div class="dict-item">
-                        <h4>📥 Estrategia: Cache First (Caché Primero)</h4>
-                        <p><strong>Función:</strong> Prioriza la memoria local del iPhone. Busca el recurso en la caché y lo entrega de forma inmediata. Si no existe en la caché, realiza la petición a internet y guarda una copia local.<br><strong>Uso ideal:</strong> Aplicaciones completamente offline, juegos web, herramientas de utilidad, reproductores locales y recursos estáticos (CSS, imágenes, JS).</p>
+                        <h4>🔔 Notificaciones Push</h4>
+                        <p>Soporte de eventos `push` y `notificationclick` dentro del Service Worker para recibir alertas remotas en segundo plano.</p>
                     </div>
                     <div class="dict-item">
-                        <h4>🌐 Estrategia: Network First (Red Primero)</h4>
-                        <p><strong>Función:</strong> Intenta obtener siempre la versión más reciente desde internet. Si la conexión falla o el usuario está fuera de línea, utiliza automáticamente la copia guardada en la caché local como respaldo (fallback).<br><strong>Uso ideal:</strong> Periódicos, blogs, feeds de noticias y plataformas donde los datos cambian constantemente pero se desea mantener acceso sin conexión.</p>
+                        <h4>🌙 Modo Oscuro Dinámico</h4>
+                        <p>Inyección de la etiqueta `color-scheme` y variables CSS automáticas para adaptar la app al tema del sistema del usuario.</p>
                     </div>
                     <div class="dict-item">
-                        <h4>⚡ Estrategia: Stale-While-Revalidate</h4>
-                        <p><strong>Función:</strong> Entrega instantáneamente la versión guardada en la caché local para una carga ultrarrápida, mientras en segundo plano realiza una petición a la red para actualizar la caché con la última versión disponible para la siguiente sesión.<br><strong>Uso ideal:</strong> Redes sociales, dashboards, listas de tareas o apps con actualizaciones frecuentes donde la velocidad de inicio es crucial.</p>
+                        <h4>📶 Banner de Conectividad en Vivo</h4>
+                        <p>Script dinámico que detecta en tiempo real si el dispositivo entra en modo offline o recupera la conexión a internet.</p>
                     </div>
                     <div class="dict-item">
-                        <h4>📲 Registro e Inscripción SW</h4>
-                        <p>Fragmento de código JavaScript que se añade al `index.html`. Notifica a Safari que debe activar `sw.js` en segundo plano cuando el usuario pulsa "Añadir a la pantalla de inicio" en su iPhone o iPad.</p>
+                        <h4>🛠 Permisos de Hardware</h4>
+                        <p>Declaración automática de permisos para Cámara, Micrófono y Geolocalización en los archivos de configuración nativos.</p>
                     </div>
                 </div>
             </div>
@@ -1110,21 +1210,6 @@
                     <div class="dict-item">
                         <h4>🌐 Microsoft PWABuilder</h4>
                         <p>Plataforma impulsada por Microsoft para empaquetar aplicaciones web progresivas en tiendas de aplicaciones como Google Play Store y Microsoft Store.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sección 6: Archivos y Workflows CI/CD -->
-            <div class="dict-section">
-                <h3>🛠 6. Archivos y Workflows CI/CD</h3>
-                <div class="dict-grid">
-                    <div class="dict-item">
-                        <h4>🛠 GitHub Actions Workflow (`.github/workflows/*.yml`)</h4>
-                        <p>El script en YAML que se sube a tu repositorio para que los servidores de GitHub instalen el SDK de Android, compilen tu APK en segundo plano y te permitan descargar el archivo ejecutable listo.</p>
-                    </div>
-                    <div class="dict-item">
-                        <h4>⚙️ Capacitor Config (`capacitor.config.json`)</h4>
-                        <p>Archivo de configuración JSON que indica a Capacitor el App ID nativo (ej. `com.meowapp.app`) y la ubicación de tus archivos HTML locales.</p>
                     </div>
                 </div>
             </div>
@@ -1150,11 +1235,11 @@
                     <div class="about-logo">🐱</div>
                     <div class="about-meta">
                         <h3>Meow CF App</h3>
-                        <span class="about-badge">v1.2.0 • PWA, APK & iOS Studio</span>
+                        <span class="about-badge">v1.3.0 • PWA, APK & iOS Studio</span>
                     </div>
                 </div>
                 <p style="font-size: 0.92rem; font-weight: 600; color: #334155; line-height: 1.5;">
-                    Estudio interactivo suite para la estructuración de manifiestos web PWA, scripts de Service Worker optimizados para ejecución Offline en iOS (Safari WebApp) y workflows automatizados de compilación nativa Android vía GitHub Actions CI/CD.
+                    Estudio interactivo suite para la estructuración de manifiestos web PWA, scripts de Service Worker optimizados para ejecución Offline en iOS (con notificaciones push y banner de red) y workflows automatizados de compilación nativa Android vía GitHub Actions CI/CD.
                 </p>
 
                 <ul class="about-info-list">
@@ -1164,7 +1249,7 @@
                     </li>
                     <li class="about-info-item">
                         <span>Versión Actual:</span>
-                        <strong>1.2.0 (Build 2026)</strong>
+                        <strong>1.3.0 (Build 2026)</strong>
                     </li>
                     <li class="about-info-item">
                         <span>Laboratorio / Organización:</span>
@@ -1248,7 +1333,7 @@
             document.querySelectorAll('.step-panel').forEach(panel => panel.classList.remove('active'));
             document.getElementById(`step-${stepNumber}`).classList.add('active');
 
-            for (let i = 1; i <= 4; i++) {
+            for (let i = 1; i <= 5; i++) {
                 const pill = document.getElementById(`pill-step-${i}`);
                 pill.classList.remove('active', 'completed');
                 if (i < stepNumber) {
@@ -1258,7 +1343,7 @@
                 }
             }
 
-            if(stepNumber === 4) {
+            if(stepNumber === 5) {
                 generateAllOutputs();
             }
         }
@@ -1277,6 +1362,17 @@
             const iconPath = document.getElementById('iconPath').value || 'icon.png';
             selectedEngine = document.getElementById('buildEngine').value;
             selectedOfflineStrat = document.getElementById('offlineStrategy').value;
+
+            // Nuevas opciones avanzadas
+            const linkBehavior = document.getElementById('linkOpeningBehavior').value;
+            const enableSplash = document.getElementById('enableSplashScreen').checked;
+            const splashDuration = document.getElementById('splashDuration').value;
+            const enablePush = document.getElementById('enablePush').checked;
+            const enableDarkMode = document.getElementById('enableDarkMode').checked;
+            const enableOfflineBanner = document.getElementById('enableOfflineBanner').checked;
+            const permCamera = document.getElementById('permCamera').checked;
+            const permMic = document.getElementById('permMic').checked;
+            const permGeo = document.getElementById('permGeo').checked;
 
             const safeAppId = `com.meowcf.${shortName.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
             const safeRepoSlug = shortName.toLowerCase().replace(/[^a-z0-9]/g, '-');
@@ -1317,9 +1413,31 @@
 
             generatedManifest = JSON.stringify(manifestObj, null, 2);
 
-            // 2. Generate iOS Offline Service Worker (sw.js)
-            generatedServiceWorker = `// Meow CF App - iOS Offline Service Worker (sw.js)
-// Estrategia seleccionada: ${selectedOfflineStrat.toUpperCase()}
+            // 2. Generate iOS & Android Service Worker (sw.js) with Push & Offline Support
+            let pushWorkerCode = '';
+            if (enablePush) {
+                pushWorkerCode = `
+// Soporte de Notificaciones Push
+self.addEventListener('push', (event) => {
+  const data = event.data ? event.data.json() : { title: '${shortName}', body: 'Nueva notificación' };
+  const options = {
+    body: data.body,
+    icon: '${iconPath}',
+    badge: '${iconPath}'
+  };
+  event.waitUntil(self.registration.showNotification(data.title, options));
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(clients.openWindow('./'));
+});
+`;
+            }
+
+            generatedServiceWorker = `// Meow CF App - Service Worker avanzado (sw.js)
+// Estrategia caché: ${selectedOfflineStrat.toUpperCase()}
+// Navegación de enlaces: ${linkBehavior}
 
 const CACHE_NAME = '${cacheName}';
 const ASSETS_TO_CACHE = [
@@ -1329,25 +1447,22 @@ const ASSETS_TO_CACHE = [
   'manifest.json'
 ];
 
-// Instalar Service Worker y guardar en caché los archivos esenciales
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('[Meow ServiceWorker] Precaching app shell para iOS');
+      console.log('[Meow ServiceWorker] Precaching app shell');
       return cache.addAll(ASSETS_TO_CACHE);
     })
   );
   self.skipWaiting();
 });
 
-// Activar y limpiar cachés antiguas
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cache) => {
           if (cache !== CACHE_NAME) {
-            console.log('[Meow ServiceWorker] Borrando caché obsoleta:', cache);
             return caches.delete(cache);
           }
         })
@@ -1357,7 +1472,6 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Interceptación de peticiones
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
@@ -1368,54 +1482,153 @@ self.addEventListener('fetch', (event) => {
           if (networkResponse && networkResponse.status === 200) {
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse));
           }
-        }).catch(() => {/* Offline fallback silencioso */});
+        }).catch(() => {});
         return cachedResponse;
       }
       return fetch(event.request).then((networkResponse) => {
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-          return networkResponse;
-        }
+        if (!networkResponse || networkResponse.status !== 200) return networkResponse;
         const responseToCache = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseToCache));
         return networkResponse;
       });
     })
   );
 });
+${pushWorkerCode}
 `;
 
-            // 3. Generate HTML Metas + Registration Script for iOS
-            generatedMetaTags = `<!-- Generado por Meow CF App para target: ${currentOS.toUpperCase()} -->\n`;
-            generatedMetaTags += `<link rel="manifest" href="manifest.json">\n`;
-            generatedMetaTags += `<meta name="theme-color" content="${themeColor}">\n`;
-            generatedMetaTags += `<meta name="apple-mobile-web-app-capable" content="yes">\n`;
-            generatedMetaTags += `<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n`;
-            generatedMetaTags += `<meta name="apple-mobile-web-app-title" content="${shortName}">\n`;
-            generatedMetaTags += `<link rel="apple-touch-icon" href="${iconPath}">\n\n`;
-            generatedMetaTags += `<!-- Código de registro para Service Worker iOS (Modo Offline) -->\n`;
-            generatedMetaTags += `<script>\n`;
-            generatedMetaTags += `  if ('serviceWorker' in navigator) {\n`;
-            generatedMetaTags += `    window.addEventListener('load', () => {\n`;
-            generatedMetaTags += `      navigator.serviceWorker.register('./sw.js')\n`;
-            generatedMetaTags += `        .then(reg => console.log('Service Worker listo en iOS:', reg.scope))\n`;
-            generatedMetaTags += `        .catch(err => console.error('Error registrando Service Worker:', err));\n`;
-            generatedMetaTags += `    });\n`;
-            generatedMetaTags += `  }\n`;
-            generatedMetaTags += `<\/script>\n`;
+            // 3. Generate HTML Metas, Link Behavior, Splash, Dark Mode & Offline Banner Snippet
+            generatedMetaTags = `<!-- Configuración Avanzada Meow CF App -->
+`;
+            generatedMetaTags += `<link rel="manifest" href="manifest.json">
+`;
+            generatedMetaTags += `<meta name="theme-color" content="${themeColor}">
+`;
+            generatedMetaTags += `<meta name="apple-mobile-web-app-capable" content="yes">
+`;
+            generatedMetaTags += `<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+`;
+            generatedMetaTags += `<meta name="apple-mobile-web-app-title" content="${shortName}">
+`;
+            generatedMetaTags += `<link rel="apple-touch-icon" href="${iconPath}">
 
-            // 4. Generate Engine Configurations
+`;
+
+            if (enableDarkMode) {
+                generatedMetaTags += `<!-- Modo Oscuro Dinámico -->
+`;
+                generatedMetaTags += `<meta name="color-scheme" content="light dark">
+
+`;
+            }
+
+            // Control de apertura de enlaces
+            generatedMetaTags += `<!-- Control de Enlaces Externos (${linkBehavior}) -->
+`;
+            generatedMetaTags += `<script>
+`;
+            generatedMetaTags += `  document.addEventListener('click', (e) => {
+`;
+            generatedMetaTags += `    const anchor = e.target.closest('a');
+`;
+            generatedMetaTags += `    if (anchor && anchor.href && anchor.hostname !== window.location.hostname) {
+`;
+            if (linkBehavior === 'external-browser') {
+                generatedMetaTags += `      // Abre en navegador predeterminado externo
+`;
+                generatedMetaTags += `      e.preventDefault();
+`;
+                generatedMetaTags += `      window.open(anchor.href, '_system');
+`;
+            } else {
+                generatedMetaTags += `      // Abre dentro de la misma app (WebView interno)
+`;
+                generatedMetaTags += `      // Permanece en la PWA actual
+`;
+            }
+            generatedMetaTags += `    }
+`;
+            generatedMetaTags += `  });
+`;
+            generatedMetaTags += `<\/script>
+
+`;
+
+            if (enableSplash) {
+                generatedMetaTags += `<!-- Script Splash Screen (${splashDuration}ms) -->
+`;
+                generatedMetaTags += `<div id="meow-splash" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:${bgColor};display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;transition:opacity 0.5s ease;">
+`;
+                generatedMetaTags += `  <img src="${iconPath}" alt="Logo" style="width:96px;height:96px;border-radius:16px;margin-bottom:16px;box-shadow:4px 4px 0 #000;">
+`;
+                generatedMetaTags += `  <h2 style="font-family:sans-serif;font-weight:900;color:${themeColor};">${shortName}</h2>
+`;
+                generatedMetaTags += `</div>
+`;
+                generatedMetaTags += `<script>
+`;
+                generatedMetaTags += `  window.addEventListener('load', () => {
+`;
+                generatedMetaTags += `    setTimeout(() => {
+`;
+                generatedMetaTags += `      const s = document.getElementById('meow-splash');
+`;
+                generatedMetaTags += `      if(s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 500); }
+`;
+                generatedMetaTags += `    }, ${splashDuration});
+`;
+                generatedMetaTags += `  });
+`;
+                generatedMetaTags += `<\/script>
+
+`;
+            }
+
+            if (enableOfflineBanner) {
+                generatedMetaTags += `<!-- Script Banner Conexión Offline / Online -->
+`;
+                generatedMetaTags += `<div id="meow-net-banner" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#000;color:#fff;padding:10px 20px;border-radius:30px;font-family:sans-serif;font-weight:800;font-size:0.85rem;z-index:99998;box-shadow:4px 4px 0 #3B82F6;">Sin conexión a Internet - Modo Offline activo</div>
+`;
+                generatedMetaTags += `<script>
+`;
+                generatedMetaTags += `  function updateNetStatus() {
+`;
+                generatedMetaTags += `    const b = document.getElementById('meow-net-banner');
+`;
+                generatedMetaTags += `    if (!navigator.onLine) { b.style.display = 'block'; } else { b.style.display = 'none'; }
+`;
+                generatedMetaTags += `  }
+`;
+                generatedMetaTags += `  window.addEventListener('online', updateNetStatus);
+`;
+                generatedMetaTags += `  window.addEventListener('offline', updateNetStatus);
+`;
+                generatedMetaTags += `  window.addEventListener('load', updateNetStatus);
+`;
+                generatedMetaTags += `<\/script>
+`;
+            }
+
+            // 4. Generate Engine Configurations & Capacitor Perms
             const tabCap = document.getElementById('tabCapacitor');
+
+            let androidPermissions = [];
+            if (permCamera) androidPermissions.push("android.permission.CAMERA");
+            if (permMic) androidPermissions.push("android.permission.RECORD_AUDIO");
+            if (permGeo) androidPermissions.push("android.permission.ACCESS_FINE_LOCATION");
 
             if (selectedEngine === 'capacitor') {
                 tabCap.style.display = 'inline-flex';
-                generatedCapacitorConfig = JSON.stringify({
+                let capConfigObj = {
                     "appId": safeAppId,
                     "appName": shortName,
                     "webDir": "./",
                     "bundledWebRuntime": false
-                }, null, 2);
+                };
+                if (androidPermissions.length > 0) {
+                    capConfigObj["android"] = { "permissions": androidPermissions };
+                }
+                generatedCapacitorConfig = JSON.stringify(capConfigObj, null, 2);
 
                 document.getElementById('engineYmlDesc').textContent = 'Workflow con Capacitor CLI + Android Gradle SDK.';
                 generatedYmlWorkflow = `# Meow CF App - Capacitor CLI APK Build Workflow
@@ -1502,7 +1715,6 @@ jobs:
           path: ./*.apk
 `;
             } else {
-                // Bubblewrap Default
                 tabCap.style.display = 'none';
                 document.getElementById('engineYmlDesc').textContent = 'Workflow con Google Bubblewrap CLI Engine.';
                 generatedYmlWorkflow = `# Meow CF App - Bubblewrap CLI Workflow
@@ -1605,17 +1817,16 @@ jobs:
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `head_meta_tags_with_sw_${currentOS}.txt`;
+            a.download = `advanced_head_snippets_${currentOS}.txt`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
 
-        // Función para descargar todos los archivos empaquetados en un ZIP usando JSZip
         function downloadAllAsZip() {
             if (typeof JSZip === 'undefined') {
-                alert('La librería JSZip no está cargada. Comprueba tu conexión a internet.');
+                alert('La librería JSZip no está cargada.');
                 return;
             }
 
@@ -1624,17 +1835,15 @@ jobs:
             const folderName = `${shortName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-bundle`;
             const folder = zip.folder(folderName);
 
-            // Añadir archivos al ZIP
             folder.file("manifest.json", generatedManifest);
             folder.file("sw.js", generatedServiceWorker);
             folder.file(`build-apk-${selectedEngine}.yml`, generatedYmlWorkflow);
-            folder.file("head_meta_tags_ios.txt", generatedMetaTags);
+            folder.file("advanced_snippets.txt", generatedMetaTags);
 
             if (selectedEngine === 'capacitor' && generatedCapacitorConfig) {
                 folder.file("capacitor.config.json", generatedCapacitorConfig);
             }
 
-            // Generar archivo binario ZIP y disparar descarga automática
             zip.generateAsync({ type: "blob" }).then((content) => {
                 const url = URL.createObjectURL(content);
                 const a = document.createElement('a');
