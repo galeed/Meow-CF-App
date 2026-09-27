@@ -1,0 +1,6 @@
+{
+  "appId": "com.meowcf.meowcf",
+  "appName": "MeowCF",
+  "webDir": "./",
+  "bundledWebRuntime": false
+}
