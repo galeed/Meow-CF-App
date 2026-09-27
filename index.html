@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meow CF App - Web App to APK Config Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #E0E7FF;
+            --card-bg: #FFFFFF;
+            --main-blue: #3B82F6;
+            --accent-yellow: #FEF08A;
+            --accent-green: #86EFAC;
+            --accent-pink: #F9A8D4;
+            --accent-orange: #FDBA74;
+            --border-color: #000000;
+            --shadow-color: #000000;
+            --border-width: 3px;
+            --shadow-offset: 5px;
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: #000;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: radial-gradient(#000000 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--main-blue);
+            border-bottom: var(--border-width) solid var(--border-color);
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-badge {
+            background: var(--accent-yellow);
+            border: var(--border-width) solid var(--border-color);
+            padding: 4px 10px;
+            border-radius: 8px;
+            box-shadow: 3px 3px 0 var(--shadow-color);
+            font-size: 1.2rem;
+        }
+
+        .tagline {
+            background: #fff;
+            border: var(--border-width) solid var(--border-color);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 0.85rem;
+            box-shadow: 3px 3px 0 var(--shadow-color);
+            text-transform: uppercase;
+        }
+
+        /* Container & Layout */
+        main {
+            max-width: 900px;
+            width: 92%;
+            margin: 2rem auto;
+            flex: 1;
+        }
+
+        /* Progress Steps */
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            gap: 10px;
+        }
+
+        .step-pill {
+            flex: 1;
+            background: #fff;
+            border: var(--border-width) solid var(--border-color);
+            padding: 12px 8px;
+            border-radius: var(--radius);
+            font-weight: 800;
+            text-align: center;
+            box-shadow: 4px 4px 0 var(--shadow-color);
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            opacity: 0.6;
+        }
+
+        .step-pill.active {
+            opacity: 1;
+            background: var(--accent-yellow);
+            transform: translateY(-2px);
+        }
+
+        .step-pill.completed {
+            opacity: 1;
+            background: var(--accent-green);
+        }
+
+        /* Main Card Container */
+        .neo-card {
+            background: var(--card-bg);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius);
+            box-shadow: 8px 8px 0 var(--shadow-color);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .step-panel {
+            display: none;
+        }
+
+        .step-panel.active {
+            display: block;
+        }
+
+        h2.panel-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        p.panel-desc {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #4B5563;
+            margin-bottom: 2rem;
+        }
+
+        /* OS Select Grid */
+        .os-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .os-card {
+            background: #F3F4F6;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.8rem 1.2rem;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 5px 5px 0 var(--shadow-color);
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+
+        .os-card:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 8px 8px 0 var(--shadow-color);
+            background: #EFF6FF;
+        }
+
+        .os-card.selected {
+            background: var(--accent-pink);
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0 var(--shadow-color);
+        }
+
+        .os-icon {
+            font-size: 3rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .os-title {
+            font-weight: 900;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+        }
+
+        /* Form Styles */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: 800;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        input[type="text"], input[type="url"], select, textarea {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            padding: 12px 14px;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: 8px;
+            background: #FAFAFA;
+            font-size: 1rem;
+            box-shadow: 3px 3px 0 var(--shadow-color);
+            outline: none;
+            transition: all 0.15s ease;
+        }
+
+        input[type="color"] {
+            -webkit-appearance: none;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: 8px;
+            width: 100%;
+            height: 48px;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 var(--shadow-color);
+            background: #fff;
+            padding: 4px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            background: #FFF;
+            border-color: var(--main-blue);
+            box-shadow: 4px 4px 0 var(--shadow-color);
+        }
+
+        .help-text {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #6B7280;
+        }
+
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2.5rem;
+            gap: 1rem;
+        }
+
+        .neo-btn {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 800;
+            font-size: 1.05rem;
+            text-transform: uppercase;
+            padding: 12px 24px;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 4px 4px 0 var(--shadow-color);
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .neo-btn:hover:not(:disabled) {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 var(--shadow-color);
+        }
+
+        .neo-btn:active:not(:disabled) {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 var(--shadow-color);
+        }
+
+        .neo-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: 2px 2px 0 var(--shadow-color);
+        }
+
+        .btn-primary {
+            background: var(--main-blue);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--accent-green);
+            color: black;
+        }
+
+        .btn-secondary {
+            background: #E5E7EB;
+            color: black;
+        }
+
+        .btn-yellow {
+            background: var(--accent-yellow);
+            color: black;
+        }
+
+        /* Code Preview Box */
+        .code-container {
+            margin-top: 1.5rem;
+            position: relative;
+        }
+
+        .code-header {
+            background: #1E293B;
+            color: #fff;
+            padding: 10px 16px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            border: var(--border-width) solid var(--border-color);
+            border-bottom: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        pre {
+            background: #0F172A;
+            color: #38BDF8;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 1.2rem;
+            border: var(--border-width) solid var(--border-color);
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            box-shadow: 5px 5px 0 var(--shadow-color);
+            overflow-x: auto;
+            max-height: 380px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Download Area */
+        .download-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.2rem;
+            margin-top: 1.5rem;
+        }
+
+        .download-box {
+            background: #FFF;
+            border: var(--border-width) solid var(--border-color);
+            padding: 1.2rem;
+            border-radius: var(--radius);
+            box-shadow: 4px 4px 0 var(--shadow-color);
+            text-align: center;
+        }
+
+        .download-box h4 {
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            font-weight: 800;
+            font-size: 0.9rem;
+            border-top: var(--border-width) solid var(--border-color);
+            background: #fff;
+            margin-top: auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .stepper {
+                flex-direction: column;
+            }
+            .btn-group {
+                flex-direction: column-reverse;
+            }
+            .neo-btn {
+                justify-content: center;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <span class="logo-badge">🐱</span>
+            <span>Meow CF App</span>
+        </div>
+        <div class="tagline">PWA & APK Config Studio</div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Stepper -->
+        <div class="stepper">
+            <div class="step-pill active" id="pill-step-1">1. Plataforma</div>
+            <div class="step-pill" id="pill-step-2">2. Datos de App</div>
+            <div class="step-pill" id="pill-step-3">3. Apariencia</div>
+            <div class="step-pill" id="pill-step-4">4. Descargar .TXT</div>
+        </div>
+
+        <!-- Container Card -->
+        <div class="neo-card">
+            
+            <!-- STEP 1: Select OS -->
+            <div class="step-panel active" id="step-1">
+                <h2 class="panel-title"><span>⚡</span> Selección de Sistema Objetivo</h2>
+                <p class="panel-desc">Elige la plataforma o herramienta para la que deseas compilar/generar los manifiestos.</p>
+                
+                <div class="os-grid">
+                    <div class="os-card selected" onclick="selectOS('android', this)">
+                        <div class="os-icon">🤖</div>
+                        <div class="os-title">Android (APK / PWA)</div>
+                        <p style="font-size: 0.8rem; margin-top: 6px; font-weight: 600;">Bubblewrap / PWABuilder / Capacitor</p>
+                    </div>
+                    <div class="os-card" onclick="selectOS('ios', this)">
+                        <div class="os-icon">🍎</div>
+                        <div class="os-title">iOS (Safari / WebApp)</div>
+                        <p style="font-size: 0.8rem; margin-top: 6px; font-weight: 600;">Apple Mobile Web Meta / Webkit</p>
+                    </div>
+                    <div class="os-card" onclick="selectOS('universal', this)">
+                        <div class="os-icon">🚀</div>
+                        <div class="os-title">Universal (All-in-One)</div>
+                        <p style="font-size: 0.8rem; margin-top: 6px; font-weight: 600;">Manifest.json + iOS Metas + AssetLinks</p>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <div></div> <!-- spacer -->
+                    <button class="neo-btn btn-primary" onclick="nextStep(2)">Continuar ➔</button>
+                </div>
+            </div>
+
+            <!-- STEP 2: App Data -->
+            <div class="step-panel" id="step-2">
+                <h2 class="panel-title"><span>📝</span> Información General de la WebApp</h2>
+                <p class="panel-desc">Ingresa los detalles principales que definen la identidad de tu aplicación.</p>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="appName">Nombre de la App</label>
+                        <input type="text" id="appName" value="Mi Super App Web" placeholder="Ej. Meow Music Player">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appShortName">Nombre Corto</label>
+                        <input type="text" id="appShortName" value="MeowApp" placeholder="Ej. MeowApp">
+                        <span class="help-text">El nombre que se mostrará en la pantalla de inicio.</span>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="appDesc">Descripción</label>
+                        <textarea id="appDesc" rows="3" placeholder="Descripción breve de la aplicación...">Una increíble app web lista para compilar a APK.</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="startUrl">Start URL (URL de Inicio)</label>
+                        <input type="text" id="startUrl" value="./index.html" placeholder="/ o ./index.html">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="scopeUrl">Scope (Alcance)</label>
+                        <input type="text" id="scopeUrl" value="./" placeholder="./">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appVersion">Versión</label>
+                        <input type="text" id="appVersion" value="1.0.0" placeholder="1.0.0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appLang">Idioma principal</label>
+                        <select id="appLang">
+                            <option value="es-ES">Español (es-ES)</option>
+                            <option value="en-US">Inglés (en-US)</option>
+                            <option value="pt-BR">Portugués (pt-BR)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="neo-btn btn-secondary" onclick="nextStep(1)">⬅ Atrás</button>
+                    <button class="neo-btn btn-primary" onclick="nextStep(3)">Siguiente: Apariencia ➔</button>
+                </div>
+            </div>
+
+            <!-- STEP 3: Appearance & Config -->
+            <div class="step-panel" id="step-3">
+                <h2 class="panel-title"><span>🎨</span> Apariencia y Comportamiento</h2>
+                <p class="panel-desc">Personaliza cómo se mostrará la app cuando el usuario la abra como APK o PWA.</p>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="displayMode">Modo de Pantalla (Display)</label>
+                        <select id="displayMode">
+                            <option value="standalone">Standalone (App Independiente)</option>
+                            <option value="fullscreen">Fullscreen (Pantalla Completa)</option>
+                            <option value="minimal-ui">Minimal-UI (Navegación Mínima)</option>
+                            <option value="browser">Browser (Navegador Estándar)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="orientation">Orientación Preferida</label>
+                        <select id="orientation">
+                            <option value="any">Cualquiera (Any)</option>
+                            <option value="portrait">Retrato (Portrait / Vertical)</option>
+                            <option value="landscape">Horizontal (Landscape)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="themeColor">Color de Tema (Theme Color)</label>
+                        <input type="color" id="themeColor" value="#3B82F6">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bgColor">Color de Fondo (Background Color)</label>
+                        <input type="color" id="bgColor" value="#FFFFFF">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="iconPath">Ruta del Icono Principal (192x192 & 512x512)</label>
+                        <input type="text" id="iconPath" value="assets/icons/icon-512x512.png" placeholder="assets/icon.png">
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="neo-btn btn-secondary" onclick="nextStep(2)">⬅ Atrás</button>
+                    <button class="neo-btn btn-success" onclick="generateManifest(); nextStep(4);">Generar Manifiesto 🚀</button>
+                </div>
+            </div>
+
+            <!-- STEP 4: Output & Download -->
+            <div class="step-panel" id="step-4">
+                <h2 class="panel-title"><span>🎉</span> Archivos Generados Listos</h2>
+                <p class="panel-desc">Revisa el resultado y descarga la configuración lista en formato <b>.txt</b> o copia el código.</p>
+
+                <div class="code-container">
+                    <div class="code-header">
+                        <span id="code-filename">manifest.json.txt</span>
+                        <button class="neo-btn btn-yellow" style="padding: 4px 10px; font-size: 0.75rem;" onclick="copyCode()">📋 Copiar</button>
+                    </div>
+                    <pre><code id="outputCode">// Tu código aparecerá aquí...</code></pre>
+                </div>
+
+                <div class="download-cards">
+                    <div class="download-box">
+                        <h4>📄 Archivo Principal TXT</h4>
+                        <p style="font-size: 0.8rem; margin-bottom: 12px; font-weight: 600;">Contiene la configuración generada (.json en txt)</p>
+                        <button class="neo-btn btn-success" style="width: 100%; font-size: 0.9rem;" onclick="downloadTXT()">📥 Descargar .TXT</button>
+                    </div>
+
+                    <div class="download-box">
+                        <h4>🏷 Meta Tags HTML</h4>
+                        <p style="font-size: 0.8rem; margin-bottom: 12px; font-weight: 600;">Etiquetas para colocar en el &lt;head&gt;</p>
+                        <button class="neo-btn btn-yellow" style="width: 100%; font-size: 0.9rem;" onclick="downloadHTMLMetaTXT()">📥 Descargar Metas (.txt)</button>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="neo-btn btn-secondary" onclick="nextStep(3)">⬅ Editar Datos</button>
+                    <button class="neo-btn btn-primary" onclick="nextStep(1)">🔄 Iniciar Nuevo</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        Meow CF App &copy; 2026 — Potenciado con Estética Neobrutalista Neobrutalist UI
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        let currentOS = 'android';
+        let generatedManifest = '';
+        let generatedMetaTags = '';
+
+        function selectOS(os, cardElem) {
+            currentOS = os;
+            document.querySelectorAll('.os-card').forEach(el => el.classList.remove('selected'));
+            cardElem.classList.add('selected');
+        }
+
+        function nextStep(stepNumber) {
+            // Update panels
+            document.querySelectorAll('.step-panel').forEach(panel => panel.classList.remove('active'));
+            document.getElementById(`step-${stepNumber}`).classList.add('active');
+
+            // Update pills
+            for (let i = 1; i <= 4; i++) {
+                const pill = document.getElementById(`pill-step-${i}`);
+                pill.classList.remove('active', 'completed');
+                if (i < stepNumber) {
+                    pill.classList.add('completed');
+                } else if (i === stepNumber) {
+                    pill.classList.add('active');
+                }
+            }
+
+            if(stepNumber === 4) {
+                generateManifest();
+            }
+        }
+
+        function generateManifest() {
+            const name = document.getElementById('appName').value || 'WebApp';
+            const shortName = document.getElementById('appShortName').value || name;
+            const desc = document.getElementById('appDesc').value || '';
+            const startUrl = document.getElementById('startUrl').value || './';
+            const scope = document.getElementById('scopeUrl').value || './';
+            const lang = document.getElementById('appLang').value || 'es-ES';
+            const display = document.getElementById('displayMode').value;
+            const orientation = document.getElementById('orientation').value;
+            const themeColor = document.getElementById('themeColor').value;
+            const bgColor = document.getElementById('bgColor').value;
+            const iconPath = document.getElementById('iconPath').value || 'icon.png';
+
+            const manifestObj = {
+                "name": name,
+                "short_name": shortName,
+                "description": desc,
+                "start_url": startUrl,
+                "scope": scope,
+                "lang": lang,
+                "display": display,
+                "orientation": orientation,
+                "background_color": bgColor,
+                "theme_color": themeColor,
+                "icons": [
+                    {
+                        "src": iconPath,
+                        "sizes": "192x192",
+                        "type": "image/png",
+                        "purpose": "any maskable"
+                    },
+                    {
+                        "src": iconPath,
+                        "sizes": "512x512",
+                        "type": "image/png",
+                        "purpose": "any maskable"
+                    }
+                ]
+            };
+
+            if (currentOS === 'android') {
+                manifestObj["related_applications"] = [];
+                manifestObj["prefer_related_applications"] = false;
+            }
+
+            generatedManifest = JSON.stringify(manifestObj, null, 2);
+
+            // Generate HTML Metas based on target OS
+            generatedMetaTags = `<!-- Generado por Meow CF App para target: ${currentOS.toUpperCase()} -->
+`;
+            generatedMetaTags += `<link rel="manifest" href="manifest.json">
+`;
+            generatedMetaTags += `<meta name="theme-color" content="${themeColor}">
+`;
+            
+            if (currentOS === 'ios' || currentOS === 'universal') {
+                generatedMetaTags += `<meta name="apple-mobile-web-app-capable" content="yes">
+`;
+                generatedMetaTags += `<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+`;
+                generatedMetaTags += `<meta name="apple-mobile-web-app-title" content="${shortName}">
+`;
+                generatedMetaTags += `<link rel="apple-touch-icon" href="${iconPath}">
+`;
+            }
+
+            document.getElementById('outputCode').textContent = generatedManifest;
+            document.getElementById('code-filename').textContent = `manifest_${currentOS}.json.txt`;
+        }
+
+        function downloadTXT() {
+            const blob = new Blob([generatedManifest], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `manifest_${currentOS}_config.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadHTMLMetaTXT() {
+            const blob = new Blob([generatedMetaTags], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `head_meta_tags_${currentOS}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function copyCode() {
+            navigator.clipboard.writeText(generatedManifest).then(() => {
+                alert('¡Código copiado al portapapeles!');
+            });
+        }
+    </script>
+</body>
+</html>
