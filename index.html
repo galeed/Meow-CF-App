@@ -85,6 +85,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .tagline {
@@ -366,6 +367,13 @@
             font-size: 0.85rem;
         }
 
+        .btn-about {
+            background: var(--accent-teal);
+            color: black;
+            padding: 8px 14px;
+            font-size: 0.85rem;
+        }
+
         /* Tab Switcher */
         .tab-switcher {
             display: flex;
@@ -436,7 +444,7 @@
             margin-bottom: 0.4rem;
         }
 
-        /* Fullscreen Help Modal */
+        /* Fullscreen Help / About Modal */
         .help-modal {
             display: none;
             position: fixed;
@@ -533,6 +541,99 @@
             line-height: 1.4;
         }
 
+        /* About Card Specifics */
+        .about-card {
+            background: #F8FAFC;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: 4px 4px 0 var(--shadow-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .about-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 1rem;
+        }
+
+        .about-logo {
+            font-size: 2.5rem;
+            background: var(--accent-yellow);
+            border: var(--border-width) solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 12px;
+            box-shadow: 3px 3px 0 var(--shadow-color);
+        }
+
+        .about-meta h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 900;
+        }
+
+        .about-badge {
+            display: inline-block;
+            background: var(--accent-pink);
+            border: var(--border-width) solid var(--border-color);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            margin-top: 2px;
+        }
+
+        .about-info-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .about-info-item {
+            background: #FFF;
+            border: var(--border-width) solid var(--border-color);
+            padding: 10px 14px;
+            border-radius: 8px;
+            box-shadow: 3px 3px 0 var(--shadow-color);
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .about-info-item span.label {
+            color: #64748B;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .github-btn {
+            background: #000;
+            color: #FFF;
+            border: var(--border-width) solid var(--border-color);
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 800;
+            font-size: 0.95rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 4px 4px 0 var(--shadow-color);
+            margin-top: 1rem;
+        }
+
+        .github-btn:hover {
+            background: #18181B;
+        }
+
         footer {
             text-align: center;
             padding: 1.2rem;
@@ -617,7 +718,10 @@
         <div class="header-actions">
             <div class="tagline">PWA, APK & iOS Offline Studio</div>
             <button class="neo-btn btn-help" onclick="toggleHelpModal(true)">
-                <span>📖</span> Diccionario / Ayuda
+                <span>📖</span> Diccionario
+            </button>
+            <button class="neo-btn btn-about" onclick="toggleAboutModal(true)">
+                <span>ℹ️</span> Acerca de
             </button>
         </div>
     </header>
@@ -995,9 +1099,73 @@
         </div>
     </div>
 
+    <!-- FULLSCREEN ABOUT MODAL (ACERCA DE LA APP & CRÉDITOS) -->
+    <div class="help-modal" id="aboutModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span>🐱</span> Acerca de Meow CF App
+                </div>
+                <button class="neo-btn btn-secondary" style="padding: 6px 12px;" onclick="toggleAboutModal(false)">✖ Cerrar</button>
+            </div>
+
+            <div class="about-card">
+                <div class="about-header">
+                    <div class="about-logo">🐱</div>
+                    <div class="about-meta">
+                        <h3>Meow CF App</h3>
+                        <span class="about-badge">v1.2.0 • PWA, APK & iOS Studio</span>
+                    </div>
+                </div>
+                <p style="font-size: 0.92rem; font-weight: 600; color: #334155; line-height: 1.5;">
+                    Estudio interactivo suite para la estructuración de manifiestos web PWA, scripts de Service Worker optimizados para ejecución Offline en iOS (Safari WebApp) y workflows automatizados de compilación nativa Android vía GitHub Actions CI/CD.
+                </p>
+
+                <ul class="about-info-list">
+                    <li class="about-info-item">
+                        <span>Nombre Oficial:</span>
+                        <strong>Meow CF App Studio</strong>
+                    </li>
+                    <li class="about-info-item">
+                        <span>Versión Actual:</span>
+                        <strong>1.2.0 (Build 2026)</strong>
+                    </li>
+                    <li class="about-info-item">
+                        <span>Laboratorio / Organización:</span>
+                        <strong>Moustache de Chat LAB</strong>
+                    </li>
+                    <li class="about-info-item">
+                        <span>Dirección & Desarrollo:</span>
+                        <strong>Galeed León</strong>
+                    </li>
+                    <li class="about-info-item">
+                        <span>Diseño UI/UX:</span>
+                        <strong>Neobrutalism Neobrutalist Architecture</strong>
+                    </li>
+                </ul>
+
+                <div style="margin-top: 1.5rem; text-align: center;">
+                    <p style="font-size: 0.85rem; font-weight: 700; color: #475569; margin-bottom: 0.5rem;">
+                        El código fuente de este proyecto es abierto y se puede consultar directamente en GitHub:
+                    </p>
+                    <a href="https://github.com/galeed/Meow-CF-App" target="_blank" rel="noopener noreferrer" class="github-btn">
+                        <svg height="20" width="20" viewBox="0 0 16 16" fill="white">
+                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                        </svg>
+                        <span>Ver Código Fuente en GitHub</span>
+                    </a>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <button class="neo-btn btn-primary" onclick="toggleAboutModal(false)">Volver a la App ➔</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer>
-        Meow CF App &copy; 2026 — Potenciado con Estética Neobrutalista Neobrutalist UI
+        Meow CF App &copy; 2026 — Desarrollado por Galeed León en Moustache de Chat LAB
     </footer>
 
     <!-- JavaScript Logic -->
@@ -1014,6 +1182,17 @@
 
         function toggleHelpModal(show) {
             const modal = document.getElementById('helpModal');
+            if (show) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            } else {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function toggleAboutModal(show) {
+            const modal = document.getElementById('aboutModal');
             if (show) {
                 modal.classList.add('active');
                 document.body.style.overflow = 'hidden';
@@ -1142,14 +1321,13 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Interceptar peticiones para el soporte sin conexión
+// Interceptación de peticiones
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
-        // Devuelve desde la caché de iOS
         fetch(event.request).then((networkResponse) => {
           if (networkResponse && networkResponse.status === 200) {
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse));
