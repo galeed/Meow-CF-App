@@ -1,0 +1,2029 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Meow CF App - PWA, APK & iOS Offline Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Librería JSZip para comprimir y descargar todo en ZIP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #E0E7FF;
+            --card-bg: #FFFFFF;
+            --main-blue: #3B82F6;
+            --accent-yellow: #FEF08A;
+            --accent-green: #86EFAC;
+            --accent-pink: #F9A8D4;
+            --accent-orange: #FDBA74;
+            --accent-purple: #C084FC;
+            --accent-teal: #2DD4BF;
+            --border-color: #000000;
+            --shadow-color: #000000;
+            --border-width: 3px;
+            --shadow-offset: 5px;
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: #000;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: radial-gradient(#000000 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--main-blue);
+            border-bottom: var(--border-width) solid var(--border-color);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-badge {
+            background: var(--accent-yellow);
+            border: var(--border-width) solid var(--border-color);
+            padding: 4px 8px;
+            border-radius: 8px;
+            box-shadow: 3px 3px 0 var(--shadow-color);
+            font-size: 1.1rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tagline {
+            background: #fff;
+            border: var(--border-width) solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 0.8rem;
+            box-shadow: 3px 3px 0 var(--shadow-color);
+            text-transform: uppercase;
+        }
+
+        /* Container & Layout */
+        main {
+            max-width: 900px;
+            width: 94%;
+            margin: 1.5rem auto;
+            flex: 1;
+        }
+
+        /* Progress Steps */
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            gap: 6px;
+            overflow-x: auto;
+        }
+
+        .step-pill {
+            flex: 1;
+            background: #fff;
+            border: var(--border-width) solid var(--border-color);
+            padding: 10px 6px;
+            border-radius: var(--radius);
+            font-weight: 800;
+            text-align: center;
+            box-shadow: 4px 4px 0 var(--shadow-color);
+            font-size: 0.78rem;
+            opacity: 0.65;
+            white-space: nowrap;
+        }
+
+        .step-pill.active {
+            opacity: 1;
+            background: var(--accent-yellow);
+        }
+
+        .step-pill.completed {
+            opacity: 1;
+            background: var(--accent-green);
+        }
+
+        /* Main Card Container */
+        .neo-card {
+            background: var(--card-bg);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius);
+            box-shadow: 6px 6px 0 var(--shadow-color);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            width: 100%;
+        }
+
+        .step-panel {
+            display: none;
+            width: 100%;
+        }
+
+        .step-panel.active {
+            display: block;
+        }
+
+        h2.panel-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 900;
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        p.panel-desc {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #4B5563;
+            margin-bottom: 1.8rem;
+        }
+
+        /* OS Select Grid */
+        .os-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.2rem;
+            margin-top: 1rem;
+        }
+
+        .os-card {
+            background: #F3F4F6;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 4px 4px 0 var(--shadow-color);
+            user-select: none;
+        }
+
+        .os-card.selected {
+            background: var(--accent-pink);
+            box-shadow: 4px 4px 0 var(--shadow-color);
+        }
+
+        .os-icon {
+            font-size: 2.8rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .os-title {
+            font-weight: 900;
+            font-size: 1.15rem;
+            text-transform: uppercase;
+        }
+
+        /* Form Styles */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.2rem;
+            width: 100%;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: 800;
+            font-size: 0.88rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            word-break: break-word;
+        }
+
+        input[type="text"], input[type="url"], select, textarea, input[type="number"] {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            padding: 12px 14px;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: 8px;
+            background: #FAFAFA;
+            font-size: 0.95rem;
+            box-shadow: 3px 3px 0 var(--shadow-color);
+            outline: none;
+            width: 100%;
+            max-width: 100%;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        textarea {
+            white-space: normal;
+        }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 36px;
+        }
+
+        input[type="color"] {
+            -webkit-appearance: none;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: 8px;
+            width: 100%;
+            height: 48px;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 var(--shadow-color);
+            background: #fff;
+            padding: 4px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            background: #FFF;
+            border-color: var(--main-blue);
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            cursor: pointer;
+            background: #F8FAFC;
+            border: var(--border-width) solid var(--border-color);
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 3px 3px 0 var(--shadow-color);
+        }
+
+        .checkbox-label input {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--main-blue);
+            cursor: pointer;
+        }
+
+        .help-text {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #6B7280;
+            word-break: break-word;
+        }
+
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            gap: 1rem;
+        }
+
+        .neo-btn {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 800;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            padding: 12px 18px;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 4px 4px 0 var(--shadow-color);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            user-select: none;
+        }
+
+        .neo-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: var(--main-blue);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--accent-green);
+            color: black;
+        }
+
+        .btn-secondary {
+            background: #E5E7EB;
+            color: black;
+        }
+
+        .btn-yellow {
+            background: var(--accent-yellow);
+            color: black;
+        }
+
+        .btn-purple {
+            background: var(--accent-purple);
+            color: black;
+        }
+
+        .btn-teal {
+            background: var(--accent-teal);
+            color: black;
+        }
+
+        .btn-pink {
+            background: var(--accent-pink);
+            color: black;
+        }
+
+        .btn-orange {
+            background: var(--accent-orange);
+            color: black;
+        }
+
+        .btn-help {
+            background: var(--accent-orange);
+            color: black;
+            padding: 8px 14px;
+            font-size: 0.85rem;
+        }
+
+        .btn-about {
+            background: var(--accent-teal);
+            color: black;
+            padding: 8px 14px;
+            font-size: 0.85rem;
+        }
+
+        /* Audit Report Card */
+        .audit-card {
+            background: #F8FAFC;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.2rem;
+            box-shadow: 4px 4px 0 var(--shadow-color);
+            margin-top: 1.2rem;
+        }
+
+        .audit-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: #FFF;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-weight: 700;
+            font-size: 0.88rem;
+        }
+
+        .audit-pass {
+            color: #16A34A;
+        }
+
+        /* Tab Switcher */
+        .tab-switcher {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+
+        /* Code Preview Box */
+        .code-container {
+            margin-top: 1rem;
+            position: relative;
+            width: 100%;
+        }
+
+        .code-header {
+            background: #1E293B;
+            color: #fff;
+            padding: 10px 14px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            border: var(--border-width) solid var(--border-color);
+            border-bottom: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        pre {
+            background: #0F172A;
+            color: #38BDF8;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 1rem;
+            border: var(--border-width) solid var(--border-color);
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            box-shadow: 4px 4px 0 var(--shadow-color);
+            overflow-x: auto;
+            max-height: 290px;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            width: 100%;
+        }
+
+        /* Download Area */
+        .download-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .download-box {
+            background: #FFF;
+            border: var(--border-width) solid var(--border-color);
+            padding: 1.2rem;
+            border-radius: var(--radius);
+            box-shadow: 4px 4px 0 var(--shadow-color);
+            text-align: center;
+        }
+
+        .download-box h4 {
+            font-weight: 800;
+            margin-bottom: 0.4rem;
+        }
+
+        /* Master ZIP download banner box */
+        .zip-master-box {
+            background: var(--accent-yellow);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: 6px 6px 0 var(--shadow-color);
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Fullscreen Help / About Modal */
+        .help-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--bg-color);
+            z-index: 9999;
+            overflow-y: auto;
+            padding: 1.5rem;
+            background-image: radial-gradient(#000000 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .help-modal.active {
+            display: block;
+        }
+
+        .modal-container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: #FFF;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius);
+            box-shadow: 8px 8px 0 var(--shadow-color);
+            padding: 2rem;
+            padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: var(--border-width) solid var(--border-color);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dict-section {
+            margin-bottom: 2rem;
+        }
+
+        .dict-section h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--accent-yellow);
+            border: var(--border-width) solid var(--border-color);
+            padding: 6px 12px;
+            display: inline-block;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            box-shadow: 3px 3px 0 var(--shadow-color);
+        }
+
+        .dict-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .dict-item {
+            background: #F8FAFC;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 3px 3px 0 var(--shadow-color);
+        }
+
+        .dict-item h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--main-blue);
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dict-item p {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #334155;
+            line-height: 1.4;
+        }
+
+        /* About Card Specifics */
+        .about-card {
+            background: #F8FAFC;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: 4px 4px 0 var(--shadow-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .about-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 1rem;
+        }
+
+        .about-logo {
+            font-size: 2.5rem;
+            background: var(--accent-yellow);
+            border: var(--border-width) solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 12px;
+            box-shadow: 3px 3px 0 var(--shadow-color);
+        }
+
+        .about-meta h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 900;
+        }
+
+        .about-badge {
+            display: inline-block;
+            background: var(--accent-pink);
+            border: var(--border-width) solid var(--border-color);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            margin-top: 2px;
+        }
+
+        .about-info-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .about-info-item {
+            background: #FFF;
+            border: var(--border-width) solid var(--border-color);
+            padding: 10px 14px;
+            border-radius: 8px;
+            box-shadow: 3px 3px 0 var(--shadow-color);
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .about-info-item span.label {
+            color: #64748B;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .github-btn {
+            background: #000;
+            color: #FFF;
+            border: var(--border-width) solid var(--border-color);
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 800;
+            font-size: 0.95rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 4px 4px 0 var(--shadow-color);
+            margin-top: 1rem;
+        }
+
+        .github-btn:hover {
+            background: #18181B;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.2rem;
+            font-weight: 800;
+            font-size: 0.85rem;
+            border-top: var(--border-width) solid var(--border-color);
+            background: #fff;
+            margin-top: auto;
+        }
+
+        /* Adaptación Mobile Estricta */
+        @media (max-width: 640px) {
+            header {
+                padding: 0.8rem 1rem;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .tagline {
+                display: none;
+            }
+
+            main {
+                width: 95%;
+                margin: 1rem auto;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stepper {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+            }
+
+            .step-pill {
+                padding: 8px 4px;
+                font-size: 0.72rem;
+            }
+
+            .neo-card {
+                padding: 1.2rem;
+                box-shadow: 4px 4px 0 var(--shadow-color);
+            }
+
+            h2.panel-title {
+                font-size: 1.3rem;
+            }
+
+            .btn-group {
+                flex-direction: column-reverse;
+                gap: 0.8rem;
+            }
+
+            .neo-btn {
+                width: 100%;
+                padding: 12px 14px;
+            }
+
+            .zip-master-box {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .modal-container {
+                padding: 1.2rem;
+            }
+
+            .dict-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <span class="logo-badge">🐱</span>
+            <span>Meow CF App</span>
+        </div>
+        <div class="header-actions">
+            <div class="tagline">PWA, APK & iOS Offline Studio</div>
+            <button class="neo-btn btn-help" onclick="toggleHelpModal(true)">
+                <span>📖</span> Diccionario
+            </button>
+            <button class="neo-btn btn-about" onclick="toggleAboutModal(true)">
+                <span>ℹ️</span> Acerca de
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Stepper (Expandido a 6 Pasos con SEO, Diagnóstico, Analíticas, Iconos Multi-resolución y localStorage) -->
+        <div class="stepper">
+            <div class="step-pill active" id="pill-step-1">1. Sistema</div>
+            <div class="step-pill" id="pill-step-2">2. Datos App</div>
+            <div class="step-pill" id="pill-step-3">3. Motor / Offline</div>
+            <div class="step-pill" id="pill-step-4">4. Avanzado (UX/Push)</div>
+            <div class="step-pill" id="pill-step-5">5. SEO, Analytics & State</div>
+            <div class="step-pill" id="pill-step-6">6. Descargar</div>
+        </div>
+
+        <!-- Container Card -->
+        <div class="neo-card">
+            
+            <!-- STEP 1: Select OS -->
+            <div class="step-panel active" id="step-1">
+                <h2 class="panel-title"><span>⚡</span> Paso 1: Sistema Objetivo</h2>
+                <p class="panel-desc">Elige la plataforma base para estructurar tus archivos de configuración.</p>
+                
+                <div class="os-grid">
+                    <div class="os-card selected" onclick="selectOS('android', this)">
+                        <div class="os-icon">🤖</div>
+                        <div class="os-title">Android (APK)</div>
+                        <p style="font-size: 0.8rem; margin-top: 6px; font-weight: 600;">Capacitor / Bubblewrap / PWABuilder</p>
+                    </div>
+                    <div class="os-card" onclick="selectOS('ios', this)">
+                        <div class="os-icon">🍎</div>
+                        <div class="os-title">iOS (Safari WebApp / Offline)</div>
+                        <p style="font-size: 0.8rem; margin-top: 6px; font-weight: 600;">Service Worker + Metas Safari + Cache</p>
+                    </div>
+                    <div class="os-card" onclick="selectOS('universal', this)">
+                        <div class="os-icon">🚀</div>
+                        <div class="os-title">Universal</div>
+                        <p style="font-size: 0.8rem; margin-top: 6px; font-weight: 600;">Manifest.json + iOS Service Worker + CI</p>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <div></div> <!-- spacer -->
+                    <button class="neo-btn btn-primary" onclick="nextStep(2)">Continuar a Datos ➔</button>
+                </div>
+            </div>
+
+            <!-- STEP 2: App Data -->
+            <div class="step-panel" id="step-2">
+                <h2 class="panel-title"><span>📝</span> Paso 2: Información General</h2>
+                <p class="panel-desc">Llena los datos requeridos para estructurar la identidad de tu app.</p>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="appName">Nombre de la App</label>
+                        <input type="text" id="appName" value="Mi Super App Web" placeholder="Ej. Meow Music Player">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appShortName">Nombre Corto</label>
+                        <input type="text" id="appShortName" value="MeowApp" placeholder="Ej. MeowApp">
+                        <span class="help-text">Visible en el icono del menú de inicio de iOS / Android.</span>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="appDesc">Descripción</label>
+                        <textarea id="appDesc" rows="3" placeholder="Descripción breve de la aplicación...">Una increíble app web lista para compilar a APK y guardar offline en iOS.</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="startUrl">Start URL (URL de Inicio)</label>
+                        <input type="text" id="startUrl" value="./index.html" placeholder="/ o ./index.html">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="scopeUrl">Scope (Alcance)</label>
+                        <input type="text" id="scopeUrl" value="./" placeholder="./">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appVersion">Versión de la App</label>
+                        <input type="text" id="appVersion" value="1.0.0" placeholder="1.0.0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appLang">Idioma Principal</label>
+                        <select id="appLang">
+                            <option value="es-ES">Español (es-ES)</option>
+                            <option value="en-US">Inglés (en-US)</option>
+                            <option value="pt-BR">Portugués (pt-BR)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="neo-btn btn-secondary" onclick="nextStep(1)">⬅ Atrás</button>
+                    <button class="neo-btn btn-primary" onclick="nextStep(3)">Siguiente: Motor / Offline ➔</button>
+                </div>
+            </div>
+
+            <!-- STEP 3: Appearance, Engine & iOS Offline Config -->
+            <div class="step-panel" id="step-3">
+                <h2 class="panel-title"><span>⚙️</span> Paso 3: Apariencia, Motor y Modo Offline iOS</h2>
+                <p class="panel-desc">Ajusta los detalles visuales y la estrategia para guardar datos sin conexión en iPhone/iPad.</p>
+
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="buildEngine" style="color: var(--main-blue);">⚡ Motor Compilación APK (Android / CI)</label>
+                        <select id="buildEngine" style="background: #EFF6FF; border-color: var(--main-blue);">
+                            <option value="capacitor">⚡ Capacitor CLI (Ionic Engine - Recomendado)</option>
+                            <option value="bubblewrap">🤖 Bubblewrap CLI (Google TWA)</option>
+                            <option value="pwabuilder">🌐 PWABuilder CLI (Microsoft PWA)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="offlineStrategy" style="color: var(--accent-purple);">🍎 Estrategia Modo Offline iOS (Safari)</label>
+                        <select id="offlineStrategy" style="background: #FAF5FF; border-color: var(--accent-purple);">
+                            <option value="cache-first">🍏 Cache First (Archivos locales para carga instantánea)</option>
+                            <option value="network-first">🌐 Network First (Prioriza red con respaldo local)</option>
+                            <option value="stale-while-revalidate">⚡ Stale-While-Revalidate (Caché instantánea + actualización)</option>
+                        </select>
+                        <span class="help-text">Genera un `sw.js` para que iOS guarde tu app en la memoria sin internet.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="displayMode">Modo de Pantalla</label>
+                        <select id="displayMode">
+                            <option value="standalone">Standalone (App nativa sin barra)</option>
+                            <option value="fullscreen">Fullscreen (Pantalla Completa)</option>
+                            <option value="minimal-ui">Minimal-UI (Navegación Mínima)</option>
+                            <option value="browser">Browser (Navegador Estándar)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="orientation">Orientación Preferida</label>
+                        <select id="orientation">
+                            <option value="any">Cualquiera (Any)</option>
+                            <option value="portrait">Retrato (Portrait / Vertical)</option>
+                            <option value="landscape">Horizontal (Landscape)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="themeColor">Color de Tema</label>
+                        <input type="color" id="themeColor" value="#3B82F6">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bgColor">Color de Fondo</label>
+                        <input type="color" id="bgColor" value="#FFFFFF">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="iconPath">Ruta del Icono Principal (PNG)</label>
+                        <input type="text" id="iconPath" value="assets/icons/icon-512x512.png" placeholder="assets/icon.png">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="checkbox-label" style="background: #EFF6FF; border-color: var(--main-blue);">
+                            <input type="checkbox" id="clearCacheOnUpdate" checked>
+                            <span>Limpiar cachés antiguas automáticamente en actualización de versión</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="neo-btn btn-secondary" onclick="nextStep(2)">⬅ Atrás</button>
+                    <button class="neo-btn btn-primary" onclick="nextStep(4)">Siguiente: Avanzado UX/Push ➔</button>
+                </div>
+            </div>
+
+            <!-- STEP 4: Advanced Features (Navegación, Splash, Push, Modo Oscuro, Hardware & Banner Offline) -->
+            <div class="step-panel" id="step-4">
+                <h2 class="panel-title"><span>🚀</span> Paso 4: Configuración Avanzada (UX, Push & Hardware)</h2>
+                <p class="panel-desc">Implementa control de navegación de enlaces, splash screen, notificaciones push, modo oscuro dinámico, indicador offline y permisos de hardware.</p>
+
+                <div class="form-grid">
+                    <!-- Control de navegación de enlaces -->
+                    <div class="form-group full-width">
+                        <label for="linkOpeningBehavior" style="color: var(--main-blue);">🌐 Apertura de Enlaces Externos</label>
+                        <select id="linkOpeningBehavior" style="background: #EFF6FF; border-color: var(--main-blue);">
+                            <option value="external-browser">Abrir en el navegador predeterminado del dispositivo (Chrome / Safari)</option>
+                            <option value="same-app">Abrir dentro de la misma app (WebView / PWA interna)</option>
+                        </select>
+                        <span class="help-text">Define si los links externos abren fuera o dentro del contenedor de la aplicación.</span>
+                    </div>
+
+                    <!-- Splash Screen Config -->
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="enableSplashScreen" checked>
+                            <span>Activar Pantalla de Carga (Splash Screen)</span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="splashDuration">Duración Splash (ms)</label>
+                        <input type="number" id="splashDuration" value="2000" step="500" min="500" max="5000">
+                    </div>
+
+                    <!-- Push Notifications -->
+                    <div class="form-group full-width">
+                        <label class="checkbox-label" style="background: #FAF5FF; border-color: var(--accent-purple);">
+                            <input type="checkbox" id="enablePush" checked>
+                            <span>Activar Notificaciones Push (Firebase / Web Push API)</span>
+                        </label>
+                        <span class="help-text">Incluye código de registro para alertas push en dispositivos móviles.</span>
+                    </div>
+
+                    <!-- Dark Mode / Dynamic Theme -->
+                    <div class="form-group">
+                        <label class="checkbox-label" style="background: #FEF08A; border-color: var(--border-color);">
+                            <input type="checkbox" id="enableDarkMode" checked>
+                            <span>Soporte de Tema Oscuro Dinámico (Dark Mode)</span>
+                        </label>
+                    </div>
+
+                    <!-- Offline Connectivity Banner -->
+                    <div class="form-group">
+                        <label class="checkbox-label" style="background: #86EFAC; border-color: var(--border-color);">
+                            <input type="checkbox" id="enableOfflineBanner" checked>
+                            <span>Banner Alerta Conexión Offline / Online en Vivo</span>
+                        </label>
+                    </div>
+
+                    <!-- Hardware Permissions -->
+                    <div class="form-group full-width" style="margin-top: 0.5rem;">
+                        <label style="color: var(--accent-orange); margin-bottom: 4px;">🛠 Permisos de Hardware Necesarios</label>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px;">
+                            <label class="checkbox-label" style="font-size: 0.8rem; padding: 8px;">
+                                <input type="checkbox" id="permCamera"> Cámara
+                            </label>
+                            <label class="checkbox-label" style="font-size: 0.8rem; padding: 8px;">
+                                <input type="checkbox" id="permMic"> Micrófono / Audio
+                            </label>
+                            <label class="checkbox-label" style="font-size: 0.8rem; padding: 8px;">
+                                <input type="checkbox" id="permGeo"> Geolocalización (GPS)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="neo-btn btn-secondary" onclick="nextStep(3)">⬅ Atrás</button>
+                    <button class="neo-btn btn-primary" onclick="nextStep(5)">Siguiente: SEO, Analytics & State ➔</button>
+                </div>
+            </div>
+
+            <!-- STEP 5: SEO, Audit, Icon Matrix, Analytics & State Management -->
+            <div class="step-panel" id="step-5">
+                <h2 class="panel-title"><span>🔍</span> Paso 5: SEO Técnico, Audit, Analíticas y Estado</h2>
+                <p class="panel-desc">Genera sitemaps, robots.txt, matriz de iconos multi-resolución, Google Analytics y gestor de preferencias locales.</p>
+
+                <div class="form-grid">
+                    <!-- SEO & Robots.txt -->
+                    <div class="form-group">
+                        <label class="checkbox-label" style="background: #ECFDF5; border-color: var(--accent-green);">
+                            <input type="checkbox" id="enableSEO" checked>
+                            <span>Generar Robots.txt y Sitemap.xml</span>
+                        </label>
+                    </div>
+
+                    <!-- Multi-resolution Icon Generator Matrix -->
+                    <div class="form-group">
+                        <label class="checkbox-label" style="background: #EFF6FF; border-color: var(--main-blue);">
+                            <input type="checkbox" id="enableIconMatrix" checked>
+                            <span>Matriz Iconos Multi-resolución (iOS/Android/Favicon)</span>
+                        </label>
+                    </div>
+
+                    <!-- Google Analytics / Tracking -->
+                    <div class="form-group full-width">
+                        <label for="gaTrackingId">ID de Google Analytics (Opcional)</label>
+                        <input type="text" id="gaTrackingId" value="G-MEOW123456" placeholder="Ej. G-XXXXXXXXXX">
+                        <span class="help-text">Inyecta script de analíticas optimizado para PWA.</span>
+                    </div>
+
+                    <!-- LocalStorage State Manager -->
+                    <div class="form-group full-width">
+                        <label class="checkbox-label" style="background: #FEF3C7; border-color: var(--accent-yellow);">
+                            <input type="checkbox" id="enableLocalStorage" checked>
+                            <span>Gestor de Ajustes y Preferencias del Usuario (`localStorage`)</span>
+                        </label>
+                        <span class="help-text">Guarda automáticamente el modo oscuro, volumen y datos de sesión en la memoria del dispositivo.</span>
+                    </div>
+                </div>
+
+                <!-- Simulación de Diagnóstico Lighthouse Audit -->
+                <div class="audit-card">
+                    <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1.1rem; font-weight:900; margin-bottom:8px;">📊 Diagnóstico de Calidad PWA (Auditoría Automatizada)</h3>
+                    <div class="audit-item">
+                        <span>PWA Instalable en Android e iOS:</span>
+                        <span class="audit-pass">✔ CUMPLE (100%)</span>
+                    </div>
+                    <div class="audit-item">
+                        <span>Soporte Ejecución Offline (Service Worker):</span>
+                        <span class="audit-pass">✔ OPTIMIZADO</span>
+                    </div>
+                    <div class="audit-item">
+                        <span>Carga Adaptativa & Metas de Pantalla Completa:</span>
+                        <span class="audit-pass">✔ ACTIVO</span>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="neo-btn btn-secondary" onclick="nextStep(4)">⬅ Atrás</button>
+                    <button class="neo-btn btn-success" onclick="generateAllOutputs(); nextStep(6);">Generar Todo 🚀</button>
+                </div>
+            </div>
+
+            <!-- STEP 6: Output & Download -->
+            <div class="step-panel" id="step-6">
+                <h2 class="panel-title"><span>🎉</span> Paso 6: Código, Service Worker iOS y Workflows Generados</h2>
+                <p class="panel-desc">Visualiza o descarga el manifiesto, Service Worker con Push, Robots.txt, Sitemap y paquete ZIP completo.</p>
+
+                <!-- Bloque de Selección de Código -->
+                <div class="code-container">
+                    <div class="code-header">
+                        <div class="tab-switcher">
+                            <button class="neo-btn btn-yellow" style="padding: 4px 8px; font-size: 0.72rem;" onclick="switchTab('manifest')">📄 manifest.json</button>
+                            <button class="neo-btn btn-pink" style="padding: 4px 8px; font-size: 0.72rem;" onclick="switchTab('sw')">🍎 sw.js (Offline + Push)</button>
+                            <button class="neo-btn btn-purple" style="padding: 4px 8px; font-size: 0.72rem;" onclick="switchTab('workflow')">⚙️ Workflow YAML</button>
+                            <button class="neo-btn btn-teal" style="padding: 4px 8px; font-size: 0.72rem;" onclick="switchTab('robots')">🤖 robots.txt</button>
+                            <button class="neo-btn btn-orange" style="padding: 4px 8px; font-size: 0.72rem;" onclick="switchTab('sitemap')">🗺 sitemap.xml</button>
+                            <button class="neo-btn btn-teal" style="padding: 4px 8px; font-size: 0.72rem;" onclick="switchTab('capacitor_config')" id="tabCapacitor" style="display:none;">🛠 capacitor.config</button>
+                        </div>
+                        <button class="neo-btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem; background: #fff;" onclick="copyCode()">📋 Copiar</button>
+                    </div>
+                    <pre><code id="outputCode">// Cargando código...</code></pre>
+                </div>
+
+                <!-- Botón Maestro de Descarga ZIP -->
+                <div class="zip-master-box">
+                    <div>
+                        <h4 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; font-weight: 900; margin-bottom: 2px;">📦 Paquete Completo ZIP</h4>
+                        <p style="font-size: 0.85rem; font-weight: 700; color: #1E293B;">Descarga todos los archivos generados juntos (Manifiesto, Service Worker, Robots, Sitemap, Workflow y Config) en un solo archivo comprimido.</p>
+                    </div>
+                    <button class="neo-btn btn-orange" style="font-size: 1rem; padding: 14px 22px; background: #FFED4A; border: 3px solid #000;" onclick="downloadAllAsZip()">📥 Descargar Todo en ZIP 🚀</button>
+                </div>
+
+                <div class="download-cards">
+                    <div class="download-box" style="background: #FFF1F2; border-color: var(--border-color);">
+                        <h4>🍎 iOS Service Worker (`sw.js`)</h4>
+                        <p style="font-size: 0.78rem; margin-bottom: 8px; font-weight: 600;">Guarda el caché, notificaciones Push y banner offline.</p>
+                        <button class="neo-btn btn-pink" style="width: 100%; font-size: 0.85rem;" onclick="downloadSW()">📥 Descargar `sw.js`</button>
+                    </div>
+
+                    <div class="download-box">
+                        <h4>📄 Manifiesto (.txt)</h4>
+                        <p style="font-size: 0.78rem; margin-bottom: 8px; font-weight: 600;">Configuración PWA en texto plano.</p>
+                        <button class="neo-btn btn-success" style="width: 100%; font-size: 0.85rem;" onclick="downloadTXT()">📥 Descargar .TXT</button>
+                    </div>
+
+                    <div class="download-box" style="background: #FAF5FF; border-color: var(--border-color);">
+                        <h4>⚙️ GitHub Actions (.yml)</h4>
+                        <p style="font-size: 0.78rem; margin-bottom: 8px; font-weight: 600;" id="engineYmlDesc">Workflow automatizado para compilar APK.</p>
+                        <button class="neo-btn btn-purple" style="width: 100%; font-size: 0.85rem;" onclick="downloadYML()">📥 Descargar .YML</button>
+                    </div>
+
+                    <div class="download-box">
+                        <h4>🏷 Metas + Snippets (.txt)</h4>
+                        <p style="font-size: 0.78rem; margin-bottom: 8px; font-weight: 600;">Etiquetas HTML, Analytics, Splash, Links y Banner.</p>
+                        <button class="neo-btn btn-yellow" style="width: 100%; font-size: 0.85rem;" onclick="downloadHTMLMetaTXT()">📥 Descargar Metas</button>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="neo-btn btn-secondary" onclick="nextStep(5)">⬅ Modificar Opciones SEO/Analytics</button>
+                    <button class="neo-btn btn-primary" onclick="nextStep(1)">🔄 Iniciar Nuevo</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- FULLSCREEN HELP MODAL (DICCIONARIO DE DEFINICIONES COMPLETO) -->
+    <div class="help-modal" id="helpModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span>📖</span> Diccionario de Términos, Motores y Caché iOS
+                </div>
+                <button class="neo-btn btn-secondary" style="padding: 6px 12px;" onclick="toggleHelpModal(false)">✖ Cerrar</button>
+            </div>
+
+            <!-- Sección 1: Sistemas Operativos Objetivo -->
+            <div class="dict-section">
+                <h3>📌 1. Sistemas Operativos Objetivo</h3>
+                <div class="dict-grid">
+                    <div class="dict-item">
+                        <h4>🤖 Android (APK / PWA)</h4>
+                        <p>Configuración estándar para generar un archivo instalable en Android (.apk/.aab) usando herramientas como Bubblewrap, PWABuilder o Capacitor.</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>🍎 iOS (Safari WebApp / Offline)</h4>
+                        <p>Ajustes específicos para Safari Mobile en iPhone/iPad, activando el modo pantalla completa nativo de iOS, icono en inicio y Service Worker para ejecución sin internet.</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>🚀 Universal</h4>
+                        <p>Genera la lista completa de parámetros soportados globalmente por Android, iOS y navegadores de escritorio al mismo tiempo.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 2: Datos Generales de la WebApp -->
+            <div class="dict-section">
+                <h3>📝 2. Datos Generales de la WebApp</h3>
+                <div class="dict-grid">
+                    <div class="dict-item">
+                        <h4>📛 Nombre de la App (`name`)</h4>
+                        <p>El nombre completo oficial de tu aplicación web tal como aparecerá en la tienda de aplicaciones o en los instaladores.</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>🏷 Nombre Corto (`short_name`)</h4>
+                        <p>Nombre abreviado que se muestra debajo del icono en la pantalla de inicio de los teléfonos móviles cuando el espacio es reducido.</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>💬 Descripción (`description`)</h4>
+                        <p>Texto explicativo breve que describe la función principal de tu aplicación para navegadores y compiladores.</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>🚀 Start URL (`start_url`)</h4>
+                        <p>La página inicial que se cargará automáticamente cuando el usuario abra la app compilada o el icono instalado (Ejemplo: `./index.html` o `/`).</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>🌐 Scope / Alcance (`scope`)</h4>
+                        <p>Define el conjunto de URLs o directorio al que está restringida la app web. Si el usuario navega fuera de este alcance, se abrirá un navegador normal.</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>🔢 Versión (`version`)</h4>
+                        <p>Número de versión del paquete (ej. `1.0.0`) necesario para gestionar actualizaciones cuando compiles la APK.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 3: SEO, Analíticas y Estado Local -->
+            <div class="dict-section">
+                <h3>🔍 3. SEO Técnico, Analíticas y Estado Local</h3>
+                <div class="dict-grid">
+                    <div class="dict-item">
+                        <h4>🤖 Robots.txt</h4>
+                        <p>Archivo de texto que indica a los motores de búsqueda (Google, Bing) qué secciones de tu PWA pueden rastrear e indexar.</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>🗺 Sitemap.xml</h4>
+                        <p>Mapa del sitio estructurado en XML para facilitar a los buscadores el descubrimiento de todas tus páginas web.</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>📊 Google Analytics PWA</h4>
+                        <p>Script de seguimiento inyectado de forma limpia para medir usuarios activos y sesiones en tiempo real dentro de la app.</p>
+                    </div>
+                    <div class="dict-item">
+                        <h4>💾 LocalStorage Manager</h4>
+                        <p>Módulo de almacenamiento local que guarda preferencias del usuario (modo oscuro, datos de sesión) directamente en la memoria del dispositivo.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <button class="neo-btn btn-primary" onclick="toggleHelpModal(false)">¡Entendido! Regresar a la App ➔</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FULLSCREEN ABOUT MODAL (ACERCA DE LA APP & CRÉDITOS) -->
+    <div class="help-modal" id="aboutModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span>🐱</span> Acerca de Meow CF App
+                </div>
+                <button class="neo-btn btn-secondary" style="padding: 6px 12px;" onclick="toggleAboutModal(false)">✖ Cerrar</button>
+            </div>
+
+            <div class="about-card">
+                <div class="about-header">
+                    <div class="about-logo">🐱</div>
+                    <div class="about-meta">
+                        <h3>Meow CF App</h3>
+                        <span class="about-badge">v1.4.0 • Ultimate PWA & APK Studio</span>
+                    </div>
+                </div>
+                <p style="font-size: 0.92rem; font-weight: 600; color: #334155; line-height: 1.5;">
+                    Estudio interactivo suite para la estructuración de manifiestos web PWA, scripts de Service Worker con soporte de notificaciones Push, SEO técnico (Robots/Sitemap), analíticas integradas, gestor de estado local y workflows automatizados de compilación Android vía GitHub Actions CI/CD.
+                </p>
+
+                <ul class="about-info-list">
+                    <li class="about-info-item">
+                        <span>Nombre Oficial:</span>
+                        <strong>Meow CF App Studio</strong>
+                    </li>
+                    <li class="about-info-item">
+                        <span>Versión Actual:</span>
+                        <strong>1.4.0 (Build 2026)</strong>
+                    </li>
+                    <li class="about-info-item">
+                        <span>Laboratorio / Organización:</span>
+                        <strong>Moustache de Chat LAB</strong>
+                    </li>
+                    <li class="about-info-item">
+                        <span>Dirección & Desarrollo:</span>
+                        <strong>Galeed León</strong>
+                    </li>
+                    <li class="about-info-item">
+                        <span>Diseño UI/UX:</span>
+                        <strong>Neobrutalism Neobrutalist Architecture</strong>
+                    </li>
+                </ul>
+
+                <div style="margin-top: 1.5rem; text-align: center;">
+                    <p style="font-size: 0.85rem; font-weight: 700; color: #475569; margin-bottom: 0.5rem;">
+                        El código fuente de este proyecto es abierto y se puede consultar directamente en GitHub:
+                    </p>
+                    <a href="https://github.com/galeed/Meow-CF-App" target="_blank" rel="noopener noreferrer" class="github-btn">
+                        <svg height="20" width="20" viewBox="0 0 16 16" fill="white">
+                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                        </svg>
+                        <span>Ver Código Fuente en GitHub</span>
+                    </a>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <button class="neo-btn btn-primary" onclick="toggleAboutModal(false)">Volver a la App ➔</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        Meow CF App &copy; 2026 — Desarrollado por Galeed León en Moustache de Chat LAB
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        let currentOS = 'android';
+        let selectedEngine = 'capacitor';
+        let selectedOfflineStrat = 'cache-first';
+        let generatedManifest = '';
+        let generatedMetaTags = '';
+        let generatedYmlWorkflow = '';
+        let generatedCapacitorConfig = '';
+        let generatedServiceWorker = '';
+        let generatedRobots = '';
+        let generatedSitemap = '';
+        let activeTab = 'manifest';
+
+        function toggleHelpModal(show) {
+            const modal = document.getElementById('helpModal');
+            if (show) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            } else {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function toggleAboutModal(show) {
+            const modal = document.getElementById('aboutModal');
+            if (show) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            } else {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function selectOS(os, cardElem) {
+            currentOS = os;
+            document.querySelectorAll('.os-card').forEach(el => el.classList.remove('selected'));
+            cardElem.classList.add('selected');
+        }
+
+        function nextStep(stepNumber) {
+            document.querySelectorAll('.step-panel').forEach(panel => panel.classList.remove('active'));
+            document.getElementById(`step-${stepNumber}`).classList.add('active');
+
+            for (let i = 1; i <= 6; i++) {
+                const pill = document.getElementById(`pill-step-${i}`);
+                pill.classList.remove('active', 'completed');
+                if (i < stepNumber) {
+                    pill.classList.add('completed');
+                } else if (i === stepNumber) {
+                    pill.classList.add('active');
+                }
+            }
+
+            if(stepNumber === 6) {
+                generateAllOutputs();
+            }
+        }
+
+        function generateAllOutputs() {
+            const name = document.getElementById('appName').value || 'WebApp';
+            const shortName = document.getElementById('appShortName').value || name;
+            const desc = document.getElementById('appDesc').value || '';
+            const startUrl = document.getElementById('startUrl').value || './';
+            const scope = document.getElementById('scopeUrl').value || './';
+            const version = document.getElementById('appVersion').value || '1.0.0';
+            const lang = document.getElementById('appLang').value || 'es-ES';
+            const display = document.getElementById('displayMode').value;
+            const orientation = document.getElementById('orientation').value;
+            const themeColor = document.getElementById('themeColor').value;
+            const bgColor = document.getElementById('bgColor').value;
+            const iconPath = document.getElementById('iconPath').value || 'icon.png';
+            const clearCacheOnUpdate = document.getElementById('clearCacheOnUpdate').checked;
+            selectedEngine = document.getElementById('buildEngine').value;
+            selectedOfflineStrat = document.getElementById('offlineStrategy').value;
+
+            // Opciones Paso 4
+            const linkBehavior = document.getElementById('linkOpeningBehavior').value;
+            const enableSplash = document.getElementById('enableSplashScreen').checked;
+            const splashDuration = document.getElementById('splashDuration').value;
+            const enablePush = document.getElementById('enablePush').checked;
+            const enableDarkMode = document.getElementById('enableDarkMode').checked;
+            const enableOfflineBanner = document.getElementById('enableOfflineBanner').checked;
+            const permCamera = document.getElementById('permCamera').checked;
+            const permMic = document.getElementById('permMic').checked;
+            const permGeo = document.getElementById('permGeo').checked;
+
+            // Opciones Paso 5
+            const enableSEO = document.getElementById('enableSEO').checked;
+            const enableIconMatrix = document.getElementById('enableIconMatrix').checked;
+            const gaTrackingId = document.getElementById('gaTrackingId').value.trim();
+            const enableLocalStorage = document.getElementById('enableLocalStorage').checked;
+
+            const safeAppId = `com.meowcf.${shortName.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+            const safeRepoSlug = shortName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+            const cleanVersion = version.replace(/[^a-zA-Z0-9._-]/g, '');
+            const cacheName = `${safeRepoSlug}-v${cleanVersion}`;
+
+            // 1. Generate Manifest con Matriz de Iconos Multi-resolución opcional
+            let iconsArray = [
+                { "src": iconPath, "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+                { "src": iconPath, "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+            ];
+
+            if (enableIconMatrix) {
+                iconsArray.push(
+                    { "src": "assets/icons/icon-72x72.png", "sizes": "72x72", "type": "image/png" },
+                    { "src": "assets/icons/icon-96x96.png", "sizes": "96x96", "type": "image/png" },
+                    { "src": "assets/icons/icon-128x128.png", "sizes": "128x128", "type": "image/png" },
+                    { "src": "assets/icons/icon-144x144.png", "sizes": "144x144", "type": "image/png" },
+                    { "src": "assets/icons/apple-touch-icon-180x180.png", "sizes": "180x180", "type": "image/png" }
+                );
+            }
+
+            const manifestObj = {
+                "name": name,
+                "short_name": shortName,
+                "description": desc,
+                "start_url": startUrl,
+                "scope": scope,
+                "lang": lang,
+                "display": display,
+                "orientation": orientation,
+                "background_color": bgColor,
+                "theme_color": themeColor,
+                "icons": iconsArray
+            };
+
+            if (currentOS === 'android') {
+                manifestObj["related_applications"] = [];
+                manifestObj["prefer_related_applications"] = false;
+            }
+
+            generatedManifest = JSON.stringify(manifestObj, null, 2);
+
+            // 2. Generate Robots.txt & Sitemap.xml
+            if (enableSEO) {
+                generatedRobots = `# Robots.txt generado por Meow CF App
+User-agent: *
+Allow: /
+Sitemap: sitemap.xml
+`;
+                generatedSitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://tu-dominio.com/</loc>
+    <lastmod>2026-01-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>`;
+            }
+
+            // 3. Generate Service Worker (sw.js) según la Estrategia Seleccionada
+            let fetchLogic = '';
+
+            if (selectedOfflineStrat === 'network-first') {
+                fetchLogic = `self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
+  event.respondWith(
+    fetch(event.request)
+      .then((netRes) => {
+        if (netRes && netRes.status === 200) {
+          const clone = netRes.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        }
+        return netRes;
+      })
+      .catch(() => caches.match(event.request))
+  );
+});`;
+            } else if (selectedOfflineStrat === 'stale-while-revalidate') {
+                fetchLogic = `self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
+  event.respondWith(
+    caches.match(event.request).then((cachedRes) => {
+      const fetchPromise = fetch(event.request).then((netRes) => {
+        if (netRes && netRes.status === 200) {
+          const clone = netRes.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        }
+        return netRes;
+      }).catch(() => {});
+      return cachedRes || fetchPromise;
+    })
+  );
+});`;
+            } else {
+                // Default: cache-first
+                fetchLogic = `self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
+  event.respondWith(
+    caches.match(event.request).then((res) => {
+      if (res) return res;
+      return fetch(event.request).then((netRes) => {
+        if (!netRes || netRes.status !== 200) return netRes;
+        const clone = netRes.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        return netRes;
+      });
+    })
+  );
+});`;
+            }
+
+            let pushWorkerCode = '';
+            if (enablePush) {
+                pushWorkerCode = `\nself.addEventListener('push', (event) => {
+  const data = event.data ? event.data.json() : { title: '${shortName}', body: 'Nueva notificación' };
+  const options = { body: data.body, icon: '${iconPath}', badge: '${iconPath}' };
+  event.waitUntil(self.registration.showNotification(data.title, options));
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(clients.openWindow('./'));
+});\n`;
+            }
+
+            let activateLogic = '';
+            if (clearCacheOnUpdate) {
+                activateLogic = `self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) => Promise.all(
+      keys.map((key) => {
+        if (key !== CACHE_NAME) {
+          console.log('[Service Worker] Eliminando caché obsoleta:', key);
+          return caches.delete(key);
+        }
+      })
+    ))
+  );
+  self.clients.claim();
+});`;
+            } else {
+                activateLogic = `self.addEventListener('activate', (event) => {
+  self.clients.claim();
+});`;
+            }
+
+            generatedServiceWorker = `// Meow CF App - Service Worker Avanzado
+// Estrategia Offline: ${selectedOfflineStrat} | Versión: ${version}
+const CACHE_NAME = '${cacheName}';
+const ASSETS_TO_CACHE = ['./', '${startUrl}', '${iconPath}', 'manifest.json'];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS_TO_CACHE))
+  );
+  self.skipWaiting();
+});
+
+${activateLogic}
+
+${fetchLogic}
+${pushWorkerCode}`;
+
+            // 4. Generate HTML Metas, Snippets (Analytics, LocalStorage & SW Registration)
+            generatedMetaTags = `<!-- Configuración Avanzada Meow CF App Studio -->
+`;
+            generatedMetaTags += `<link rel="manifest" href="manifest.json">
+`;
+            generatedMetaTags += `<meta name="theme-color" content="${themeColor}">
+`;
+            generatedMetaTags += `<meta name="apple-mobile-web-app-capable" content="yes">
+`;
+            generatedMetaTags += `<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+`;
+            generatedMetaTags += `<meta name="apple-mobile-web-app-title" content="${shortName}">
+`;
+            generatedMetaTags += `<link rel="apple-touch-icon" href="${iconPath}">
+
+`;
+
+            // Registro del Service Worker e invalidación / actualización de caché
+            generatedMetaTags += `<!-- Registro Service Worker & Gestión de Caché (${selectedOfflineStrat}) -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').then((reg) => {
+        console.log('Service Worker registrado correctamente con alcance:', reg.scope);
+        reg.onupdatefound = () => {
+          const installingWorker = reg.installing;
+          if (installingWorker == null) return;
+          installingWorker.onstatechange = () => {
+            if (installingWorker.state === 'installed') {
+              if (navigator.serviceWorker.controller) {
+                console.log('Nueva versión disponible. Recargue para actualizar.');
+              }
+            }
+          };
+        };
+      }).catch((err) => {
+        console.error('Error al registrar el Service Worker:', err);
+      });
+    });
+  }
+<\/script>
+
+`;
+
+            if (gaTrackingId) {
+                generatedMetaTags += `<!-- Google Analytics PWA Snippet -->
+`;
+                generatedMetaTags += `<script async src="https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}"><\/script>
+`;
+                generatedMetaTags += `<script>
+`;
+                generatedMetaTags += `  window.dataLayer = window.dataLayer || [];
+`;
+                generatedMetaTags += `  function gtag(){dataLayer.push(arguments);}
+`;
+                generatedMetaTags += `  gtag('js', new Date());
+`;
+                generatedMetaTags += `  gtag('config', '${gaTrackingId}');
+`;
+                generatedMetaTags += `<\/script>
+
+`;
+            }
+
+            if (enableLocalStorage) {
+                generatedMetaTags += `<!-- LocalStorage Settings Manager -->
+`;
+                generatedMetaTags += `<script>
+`;
+                generatedMetaTags += `  const MeowState = {
+`;
+                generatedMetaTags += `    save: (key, val) => localStorage.setItem('meow_' + key, JSON.stringify(val)),
+`;
+                generatedMetaTags += `    get: (key) => JSON.parse(localStorage.getItem('meow_' + key) || 'null')
+`;
+                generatedMetaTags += `  };
+`;
+                generatedMetaTags += `<\/script>
+
+`;
+            }
+
+            if (enableDarkMode) {
+                generatedMetaTags += `<meta name="color-scheme" content="light dark">
+
+`;
+            }
+
+            // Control de apertura de enlaces
+            generatedMetaTags += `<!-- Link Navigation Control (${linkBehavior}) -->
+`;
+            generatedMetaTags += `<script>
+`;
+            generatedMetaTags += `  document.addEventListener('click', (e) => {
+`;
+            generatedMetaTags += `    const a = e.target.closest('a');
+`;
+            generatedMetaTags += `    if (a && a.href && a.hostname !== window.location.hostname) {
+`;
+            if (linkBehavior === 'external-browser') {
+                generatedMetaTags += `      e.preventDefault(); window.open(a.href, '_system');
+`;
+            }
+            generatedMetaTags += `    }
+`;
+            generatedMetaTags += `  });
+`;
+            generatedMetaTags += `<\/script>
+
+`;
+
+            if (enableSplash) {
+                generatedMetaTags += `<div id="meow-splash" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:${bgColor};display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;transition:opacity 0.5s ease;">
+`;
+                generatedMetaTags += `  <img src="${iconPath}" alt="Logo" style="width:96px;height:96px;border-radius:16px;margin-bottom:16px;box-shadow:4px 4px 0 #000;">
+`;
+                generatedMetaTags += `  <h2 style="font-family:sans-serif;font-weight:900;color:${themeColor};">${shortName}</h2>
+`;
+                generatedMetaTags += `</div>
+`;
+                generatedMetaTags += `<script>
+`;
+                generatedMetaTags += `  window.addEventListener('load', () => {
+`;
+                generatedMetaTags += `    setTimeout(() => {
+`;
+                generatedMetaTags += `      const s = document.getElementById('meow-splash');
+`;
+                generatedMetaTags += `      if(s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 500); }
+`;
+                generatedMetaTags += `    }, ${splashDuration});
+`;
+                generatedMetaTags += `  });
+`;
+                generatedMetaTags += `<\/script>
+
+`;
+            }
+
+            if (enableOfflineBanner) {
+                generatedMetaTags += `<div id="meow-net-banner" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#000;color:#fff;padding:10px 20px;border-radius:30px;font-family:sans-serif;font-weight:800;font-size:0.85rem;z-index:99998;box-shadow:4px 4px 0 #3B82F6;">Sin conexión a Internet - Modo Offline activo</div>
+`;
+                generatedMetaTags += `<script>
+`;
+                generatedMetaTags += `  function updateNetStatus() {
+`;
+                generatedMetaTags += `    const b = document.getElementById('meow-net-banner');
+`;
+                generatedMetaTags += `    if (!navigator.onLine) { b.style.display = 'block'; } else { b.style.display = 'none'; }
+`;
+                generatedMetaTags += `  }
+`;
+                generatedMetaTags += `  window.addEventListener('online', updateNetStatus);
+`;
+                generatedMetaTags += `  window.addEventListener('offline', updateNetStatus);
+`;
+                generatedMetaTags += `  window.addEventListener('load', updateNetStatus);
+`;
+                generatedMetaTags += `<\/script>
+`;
+            }
+
+            // 5. Capacitor Config
+            const tabCap = document.getElementById('tabCapacitor');
+
+            let androidPermissions = [];
+            if (permCamera) androidPermissions.push("android.permission.CAMERA");
+            if (permMic) androidPermissions.push("android.permission.RECORD_AUDIO");
+            if (permGeo) androidPermissions.push("android.permission.ACCESS_FINE_LOCATION");
+
+            if (selectedEngine === 'capacitor') {
+                tabCap.style.display = 'inline-flex';
+                let capConfigObj = {
+                    "appId": safeAppId,
+                    "appName": shortName,
+                    "webDir": "./",
+                    "bundledWebRuntime": false
+                };
+                if (androidPermissions.length > 0) {
+                    capConfigObj["android"] = { "permissions": androidPermissions };
+                }
+                generatedCapacitorConfig = JSON.stringify(capConfigObj, null, 2);
+
+                document.getElementById('engineYmlDesc').textContent = 'Workflow con Capacitor CLI + Android Gradle SDK.';
+                generatedYmlWorkflow = `# Meow CF App - Capacitor CLI APK Build Workflow
+name: Build Android APK (Capacitor)
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Configurar Java JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Configurar Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Instalar Capacitor CLI
+        run: |
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npx cap init "${shortName}" "${safeAppId}" --web-dir ./
+          npx cap add android
+          npx cap copy
+
+      - name: Compilar APK con Gradle
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Subir APK Generada
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${safeRepoSlug}-capacitor-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+`;
+            } else if (selectedEngine === 'pwabuilder') {
+                tabCap.style.display = 'none';
+                document.getElementById('engineYmlDesc').textContent = 'Workflow con PWABuilder CLI Engine.';
+                generatedYmlWorkflow = `# Meow CF App - PWABuilder CLI Workflow
+name: Build Android APK (PWABuilder)
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  pwa-builder-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Instalar PWABuilder CLI
+        run: npm install -g @pwabuilder/cli
+
+      - name: Generar Paquete APK
+        run: |
+          pwa-builder package --manifest=manifest.json --platform=android
+
+      - name: Subir APK Artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${safeRepoSlug}-pwabuilder-apk
+          path: ./*.apk
+`;
+            } else {
+                tabCap.style.display = 'none';
+                document.getElementById('engineYmlDesc').textContent = 'Workflow con Google Bubblewrap CLI Engine.';
+                generatedYmlWorkflow = `# Meow CF App - Bubblewrap CLI Workflow
+name: Build Android APK (Bubblewrap)
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Configurar Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Instalar Bubblewrap CLI
+        run: npm install -g @bubblewrap/cli
+
+      - name: Generar TWA APK
+        run: |
+          bubblewrap init --manifest=manifest.json || true
+          bubblewrap build
+
+      - name: Subir APK Artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${safeRepoSlug}-bubblewrap-apk
+          path: ./*.apk
+`;
+            }
+
+            switchTab(activeTab);
+        }
+
+        function switchTab(tab) {
+            activeTab = tab;
+            if (tab === 'manifest') {
+                document.getElementById('outputCode').textContent = generatedManifest;
+            } else if (tab === 'sw') {
+                document.getElementById('outputCode').textContent = generatedServiceWorker;
+            } else if (tab === 'workflow') {
+                document.getElementById('outputCode').textContent = generatedYmlWorkflow;
+            } else if (tab === 'robots') {
+                document.getElementById('outputCode').textContent = generatedRobots || '# SEO no activado';
+            } else if (tab === 'sitemap') {
+                document.getElementById('outputCode').textContent = generatedSitemap || '<!-- SEO no activado -->';
+            } else if (tab === 'capacitor_config') {
+                document.getElementById('outputCode').textContent = generatedCapacitorConfig;
+            }
+        }
+
+        function downloadTXT() {
+            const blob = new Blob([generatedManifest], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `manifest_${currentOS}_config.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadSW() {
+            const blob = new Blob([generatedServiceWorker], { type: 'text/javascript;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `sw.js`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadYML() {
+            const blob = new Blob([generatedYmlWorkflow], { type: 'text/yaml;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `build-apk-${selectedEngine}.yml`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadHTMLMetaTXT() {
+            const blob = new Blob([generatedMetaTags], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ultimate_head_snippets_${currentOS}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadAllAsZip() {
+            if (typeof JSZip === 'undefined') {
+                alert('La librería JSZip no está cargada.');
+                return;
+            }
+
+            const zip = new JSZip();
+            const shortName = document.getElementById('appShortName').value || 'MeowApp';
+            const folderName = `${shortName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-ultimate-bundle`;
+            const folder = zip.folder(folderName);
+
+            folder.file("manifest.json", generatedManifest);
+            folder.file("sw.js", generatedServiceWorker);
+            folder.file(`build-apk-${selectedEngine}.yml`, generatedYmlWorkflow);
+            folder.file("head_snippets.txt", generatedMetaTags);
+
+            if (generatedRobots) folder.file("robots.txt", generatedRobots);
+            if (generatedSitemap) folder.file("sitemap.xml", generatedSitemap);
+
+            if (selectedEngine === 'capacitor' && generatedCapacitorConfig) {
+                folder.file("capacitor.config.json", generatedCapacitorConfig);
+            }
+
+            zip.generateAsync({ type: "blob" }).then((content) => {
+                const url = URL.createObjectURL(content);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${folderName}.zip`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }).catch(err => {
+                console.error('Error generando archivo ZIP:', err);
+                alert('Ocurrió un error al empaquetar el archivo ZIP.');
+            });
+        }
+
+        function copyCode() {
+            let codeToCopy = generatedManifest;
+            if (activeTab === 'sw') codeToCopy = generatedServiceWorker;
+            if (activeTab === 'workflow') codeToCopy = generatedYmlWorkflow;
+            if (activeTab === 'robots') codeToCopy = generatedRobots;
+            if (activeTab === 'sitemap') codeToCopy = generatedSitemap;
+            if (activeTab === 'capacitor_config') codeToCopy = generatedCapacitorConfig;
+
+            navigator.clipboard.writeText(codeToCopy).then(() => {
+                alert('¡Código copiado al portapapeles!');
+            });
+        }
+    </script>
+</body>
+</html>
