@@ -3,10 +3,9 @@ const CACHE_NAME = 'meow-app-v1';
 
 // Lista de archivos principales a guardar en caché
 const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './manifest.json',
-  './sw.js'
+  'index.html',
+  'manifest.json',
+  'sw.js'
 ];
 
 // 1. Evento Install: Descarga y guarda los recursos en la caché
