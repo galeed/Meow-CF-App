@@ -23,14 +23,14 @@ jobs:
         with:
           node-version: 20
 
-      # 3. Configurar Java JDK 17 (necesario para Gradle y Android)
-      - name: Configurar Java JDK 17
+      # 3. Configurar Java JDK 21 (Requerido por las últimas versiones de Capacitor)
+      - name: Configurar Java JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: '17'
+          java-version: '21'
 
-      # 4. Aceptar licencias de Android usando el SDK preinstalado en runner
+      # 4. Aceptar licencias Android
       - name: Aceptar licencias Android
         run: |
           yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
@@ -53,13 +53,13 @@ jobs:
       - name: Permisos Gradle
         run: chmod +x android/gradlew
 
-      # 8. Compilar APK aceptando licencias de Gradle
+      # 8. Compilar APK
       - name: Compilar APK con Gradle
         run: |
           cd android
           ./gradlew assembleDebug --no-daemon -Pandroid.builder.sdkDownload=true
 
-      # 9. Subir la APK generada
+      # 9. Subir la APK generada como artefacto
       - name: Subir APK como Artefacto
         uses: actions/upload-artifact@v4
         with:
