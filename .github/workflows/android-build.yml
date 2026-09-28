@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: 20
 
-      # 3. Configurar Java JDK 21 (Requerido por las últimas versiones de Capacitor)
+      # 3. Configurar Java JDK 21
       - name: Configurar Java JDK 21
         uses: actions/setup-java@v4
         with:
@@ -49,17 +49,34 @@ jobs:
           npx cap copy android
           npx cap sync android
 
-      # 7. Permisos de Gradle
+      # 7. Corregir duplicidad de clases Kotlin
+      - name: Resolver conflictos de dependencias de Kotlin
+        run: |
+          cat << 'EOF' >> android/build.gradle
+
+          subprojects {
+              configurations.all {
+                  resolutionStrategy {
+                      dependencySubstitution {
+                          substitute module('org.jetbrains.kotlin:kotlin-stdlib-jdk7') using module('org.jetbrains.kotlin:kotlin-stdlib:1.8.22')
+                          substitute module('org.jetbrains.kotlin:kotlin-stdlib-jdk8') using module('org.jetbrains.kotlin:kotlin-stdlib:1.8.22')
+                      }
+                  }
+              }
+          }
+          EOF
+
+      # 8. Permisos de Gradle
       - name: Permisos Gradle
         run: chmod +x android/gradlew
 
-      # 8. Compilar APK
+      # 9. Compilar APK
       - name: Compilar APK con Gradle
         run: |
           cd android
           ./gradlew assembleDebug --no-daemon -Pandroid.builder.sdkDownload=true
 
-      # 9. Subir la APK generada como artefacto
+      # 10. Subir la APK generada como artefacto
       - name: Subir APK como Artefacto
         uses: actions/upload-artifact@v4
         with:
