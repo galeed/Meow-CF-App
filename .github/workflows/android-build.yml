@@ -30,9 +30,13 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      # 4. Configurar Android SDK
+      # 4. Configurar Android SDK y aceptar licencias
       - name: Configurar Android SDK
         uses: android-actions/setup-android@v3
+
+      - name: Aceptar licencias del SDK de Android
+        run: |
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
 
       # 5. Instalar Capacitor
       - name: Instalar dependencias de Capacitor
@@ -40,7 +44,7 @@ jobs:
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
 
-      # 6. Inicializar y sincronizar usando la carpeta www
+      # 6. Inicializar y sincronizar
       - name: Inicializar Capacitor y Agregar Plataforma Android
         run: |
           npx cap init "Meow CF App" "com.meowcf.app" --web-dir www
@@ -52,7 +56,7 @@ jobs:
       - name: Permisos Gradle
         run: chmod +x android/gradlew
 
-      # 8. Compilar la APK en modo Debug
+      # 8. Compilar APK
       - name: Compilar APK con Gradle
         run: |
           cd android
