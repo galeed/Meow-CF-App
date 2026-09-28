@@ -23,28 +23,25 @@ jobs:
         with:
           node-version: 20
 
-      # 3. Configurar Java JDK 17
+      # 3. Configurar Java JDK 17 (necesario para Gradle y Android)
       - name: Configurar Java JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      # 4. Configurar Android SDK y aceptar licencias
-      - name: Configurar Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Aceptar licencias del SDK de Android
+      # 4. Aceptar licencias de Android usando el SDK preinstalado en runner
+      - name: Aceptar licencias Android
         run: |
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
-      # 5. Instalar Capacitor
+      # 5. Instalar dependencias de Capacitor
       - name: Instalar dependencias de Capacitor
         run: |
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
 
-      # 6. Inicializar y sincronizar
+      # 6. Inicializar y sincronizar Capacitor
       - name: Inicializar Capacitor y Agregar Plataforma Android
         run: |
           npx cap init "Meow CF App" "com.meowcf.app" --web-dir www
@@ -56,11 +53,11 @@ jobs:
       - name: Permisos Gradle
         run: chmod +x android/gradlew
 
-      # 8. Compilar APK
+      # 8. Compilar APK aceptando licencias de Gradle
       - name: Compilar APK con Gradle
         run: |
           cd android
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew assembleDebug --no-daemon -Pandroid.builder.sdkDownload=true
 
       # 9. Subir la APK generada
       - name: Subir APK como Artefacto
